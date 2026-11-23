@@ -1955,10 +1955,10 @@
 
     .btn-pill-danger:hover { filter: brightness(1.08); }
 
-    .sidebar-backdrop {
-      display: none;
-    }
-
+    .sidebar-backdrop,
+    .popover-backdrop,
+    .mobile-cat-rail,
+    .sidebar-edit-btn,
     .mobile-back-label,
     .mobile-move-btns,
     .time-rel {
@@ -2084,11 +2084,11 @@
 
     @media (hover: none) {
       .comment-actions { opacity: 1; }
-      .hover-row-btn { opacity: 0.72; }
       .label-filter-wrap.active .label-filter-del {
-        width: 18px;
+        width: 20px;
+        height: 20px;
         margin-right: 4px;
-        opacity: 0.8;
+        opacity: 0.85;
       }
     }
 
@@ -2137,16 +2137,17 @@
       }
     }
 
-    /* ================= iPhone & Mobile Standalone PWA Layout ================= */
+    /* ================= iPhone & Mobile Purpose-Built Native App Layout ================= */
     @media (max-width: 768px) {
+      /* 1. Off-Canvas Sidebar Drawer with Zero-Overlap Edit Mode */
       .sidebar-backdrop {
         display: block;
         position: fixed;
         inset: 0;
         z-index: 88;
-        background: rgba(0, 0, 0, 0.52);
-        backdrop-filter: blur(3px);
-        -webkit-backdrop-filter: blur(3px);
+        background: rgba(0, 0, 0, 0.54);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.24s ease;
@@ -2165,8 +2166,8 @@
         left: 0;
         bottom: 0;
         z-index: 90;
-        width: min(292px, 84vw);
-        padding: calc(10px + env(safe-area-inset-top, 0px)) 12px calc(14px + env(safe-area-inset-bottom, 0px));
+        width: min(300px, 84vw);
+        padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(16px + env(safe-area-inset-bottom, 0px));
         border-right: 1px solid var(--border);
         box-shadow: 16px 0 42px rgba(0, 0, 0, 0.45);
         opacity: 1;
@@ -2180,46 +2181,96 @@
         pointer-events: auto;
       }
 
-      .mobile-move-btns {
+      .sidebar-edit-btn {
         display: inline-flex;
         align-items: center;
-        gap: 1px;
-        margin-right: 2px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border-strong);
+        background: var(--bg-elevated);
+        color: var(--ink-muted);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      #sidebar.editing .sidebar-edit-btn {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #ffffff;
+      }
+
+      .nav-item {
+        padding: 10px 10px;
+        min-height: 42px;
+        font-size: 14.5px;
+      }
+
+      .nav-chevron {
+        width: 24px;
+        height: 24px;
+      }
+
+      .nav-subitem {
+        padding: 8px 10px 8px 12px;
+        min-height: 38px;
+        font-size: 13.5px;
+      }
+
+      /* Never overlap trash / reorder buttons on counts in sidebar! */
+      #sidebar .hover-row-btn,
+      #sidebar .mobile-move-btns {
+        display: none !important;
+        position: static !important;
+        transform: none !important;
+      }
+
+      #sidebar.editing .nav-count {
+        display: none !important;
+      }
+
+      #sidebar.editing .mobile-move-btns {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 2px;
+        margin-left: auto;
+      }
+
+      #sidebar.editing .hover-del-btn {
+        display: inline-grid !important;
+        opacity: 0.9 !important;
+        pointer-events: auto !important;
+        width: 28px !important;
+        height: 28px !important;
+        color: #e0524c;
       }
 
       .mobile-move-btn {
-        width: 20px;
-        height: 22px;
-        border: none;
-        border-radius: 5px;
-        background: transparent;
-        color: var(--ink-faint);
+        width: 26px;
+        height: 28px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--bg-elevated);
+        color: var(--ink-strong);
         display: grid;
         place-items: center;
-        font-size: 11px;
+        font-size: 12px;
         padding: 0;
         cursor: pointer;
       }
 
       .mobile-move-btn:active {
         background: var(--bg-active);
-        color: var(--ink-strong);
       }
 
-      .nav-item {
-        padding: 9px 10px;
-        font-size: 14px;
-      }
-
-      .nav-subitem {
-        padding: 7px 10px 7px 14px;
-        font-size: 13.5px;
-      }
-
-      #open-sidebar-btn {
+      /* 2. iOS Top Navigation Bar */
+      #open-sidebar-btn,
+      #refresh-btn {
         display: grid !important;
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
       }
 
       .topbar {
@@ -2228,88 +2279,164 @@
         gap: 8px;
       }
 
+      .topbar-left {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .breadcrumb {
+        flex: 1;
+        min-width: 0;
+        gap: 8px;
+      }
+
       #crumb-name {
-        font-size: 15px;
+        font-size: 16px;
+        font-weight: 650;
+      }
+
+      .hero-active-label {
+        max-width: 112px;
+        padding: 3px 8px;
+        font-size: 12px;
+        flex-shrink: 1;
+        overflow: hidden;
+      }
+
+      .hero-active-label span:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .hero-meta {
         display: none !important;
       }
 
+      .sync-text[data-idle="1"] {
+        display: none;
+      }
+
+      /* 3. Scrollable Mobile Workspace & 1-Tap Category Switcher Rail */
       .page-scroll {
         -webkit-overflow-scrolling: touch;
       }
 
       .page-container,
       body.peek-open .page-container {
-        padding: 16px 14px calc(88px + env(safe-area-inset-bottom, 0px));
+        padding: 12px 14px calc(96px + env(safe-area-inset-bottom, 0px));
       }
 
-      /* 2-Row Mobile Composer Card — 16px input prevents iOS Safari zoom */
-      .pill-composer {
-        flex-wrap: wrap;
-        border-radius: 18px;
-        padding: 11px 11px 10px 14px;
-        gap: 8px 6px;
-        margin-bottom: 16px;
+      body.composer-open .page-container {
+        padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px));
       }
 
-      .pill-composer input {
-        flex: 1 1 100%;
-        width: 100%;
-        font-size: 16px;
-        line-height: 1.4;
-        padding: 2px 2px 4px 0;
+      .mobile-cat-rail {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        overflow-x: auto;
+        margin: 0 -14px 12px;
+        padding: 2px 14px 4px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .pill-trigger {
-        padding: 6px 10px;
-        font-size: 12.5px;
+      .mobile-cat-rail::-webkit-scrollbar {
+        display: none;
       }
 
-      .send-circle-btn {
-        margin-left: auto;
-        width: 34px;
-        height: 34px;
+      .mobile-cat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-subtle);
+        color: var(--ink-muted);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: background 0.14s, border-color 0.14s, color 0.14s;
       }
 
-      /* Prevent iOS Safari auto-zoom on every text input / textarea */
-      .clean-input,
-      .search-wrap input,
-      .notion-textarea,
-      .note-composer textarea {
-        font-size: 16px !important;
+      .mobile-cat-chip.active {
+        background: color-mix(in srgb, var(--cat-color, var(--blue)) 16%, var(--bg-elevated));
+        border-color: color-mix(in srgb, var(--cat-color, var(--blue)) 48%, var(--border));
+        color: var(--ink-strong);
+        font-weight: 600;
       }
 
+      .mobile-cat-count {
+        font-size: 11px;
+        color: var(--ink-faint);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .mobile-cat-chip.active .mobile-cat-count {
+        color: var(--ink-muted);
+      }
+
+      /* 4. Non-Squished Status Tabs & Single-Row Filter Strip */
       .view-bar {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 9px;
         margin-bottom: 10px;
       }
 
       .view-tabs {
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
+        padding: 3px;
+        gap: 2px;
       }
 
       .view-tab {
-        flex: 1;
-        justify-content: center;
-        padding: 6px 8px;
-        font-size: 12.5px;
-        gap: 4px;
+        flex: 0 0 auto;
+        padding: 6px 12px;
+        font-size: 13px;
+        gap: 5px;
       }
 
       .view-actions {
         width: 100%;
+        display: flex;
+        align-items: center;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 7px;
+      }
+
+      .toolbar-btn,
+      .batch-del-btn {
+        padding: 6px 12px;
+        font-size: 12.5px;
+        min-height: 34px;
+      }
+
+      #select-mode-btn {
+        margin-left: auto;
+      }
+
+      /* Clean dedicated multi-select bar on mobile — zero button crowding */
+      body.in-select-mode #search-wrap,
+      body.in-select-mode #type-filter-btn,
+      body.in-select-mode #sort-menu-btn {
+        display: none !important;
+      }
+
+      .search-wrap {
+        min-height: 34px;
+        padding: 4px 9px;
       }
 
       .search-wrap.open {
         flex: 1 1 100%;
         order: 10;
+        padding: 5px 12px;
       }
 
       .search-wrap.open input {
@@ -2319,8 +2446,8 @@
       .label-bar {
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 2px;
-        margin-bottom: 12px;
+        margin: 0 -14px 12px;
+        padding: 0 14px 2px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
       }
@@ -2329,47 +2456,72 @@
         display: none;
       }
 
+      .label-bar.empty-labels .label-filter-wrap {
+        display: none;
+      }
+
       .label-filter-wrap,
       .label-add-pill {
         flex-shrink: 0;
       }
 
-      /* Mobile Ticket Cards */
+      .label-filter-pill {
+        padding: 5px 11px;
+        font-size: 12.5px;
+      }
+
+      /* 5. Tactile Native Task Cards (Zero Hover Trash Clutter) */
       .db-table-wrap {
         overflow-x: visible;
-        border-radius: 16px;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
       }
 
       .db-grid {
         display: flex !important;
         flex-direction: column;
+        gap: 9px;
       }
 
       .db-head-cell {
         display: none !important;
       }
 
+      .empty-db {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px 20px;
+      }
+
       .db-row {
         display: flex !important;
         flex-wrap: wrap;
         align-items: center;
-        gap: 8px 6px;
+        gap: 9px 6px;
         padding: 13px 14px;
-        border-bottom: 1px solid var(--border);
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         cursor: pointer;
-        transition: background 0.12s;
+        transition: transform 0.1s ease, background 0.12s, border-color 0.12s;
       }
 
-      .db-row:last-child {
-        border-bottom: none;
+      .db-row:active {
+        transform: scale(0.992);
+        background: var(--bg-hover);
       }
 
-      .db-row:active,
       .db-row.selected {
-        background: color-mix(in srgb, var(--blue) 8%, var(--bg-elevated));
+        border-color: color-mix(in srgb, var(--blue) 45%, var(--border));
+        background: color-mix(in srgb, var(--blue) 7%, var(--bg-elevated));
       }
 
       .db-row.checked {
+        border-color: color-mix(in srgb, var(--blue) 55%, var(--border));
         background: color-mix(in srgb, var(--blue) 12%, var(--bg-elevated));
       }
 
@@ -2381,29 +2533,51 @@
         background: transparent !important;
       }
 
+      /* Hide desktop hover tag/trash buttons & empty '無' priority pill on mobile cards */
+      .db-row .row-actions,
+      .db-row > .db-cell.is-prio-0,
+      .db-row > .db-cell:nth-child(5) {
+        display: none !important;
+      }
+
       .db-row > .db-cell.name-cell {
         flex: 1 1 100%;
         width: 100%;
         align-items: flex-start;
-        gap: 8px;
       }
 
       .name-left {
+        position: relative;
+        padding-left: 26px;
         flex-wrap: wrap;
         align-items: center;
-        gap: 5px 6px;
+        gap: 6px;
+        width: 100%;
       }
 
       .row-dot {
+        position: absolute;
+        left: 0;
+        top: 1px;
         width: 20px;
         height: 20px;
-        transform: scale(0.55);
+        margin: 0;
+        transform: scale(0.45);
+        pointer-events: none;
+      }
+
+      .db-grid.select-mode .row-dot,
+      .db-row.checked .row-dot {
+        pointer-events: auto;
+        transform: scale(1);
       }
 
       .ticket-name {
-        flex: 1 1 calc(100% - 28px);
-        font-size: 15px;
-        line-height: 1.4;
+        flex: 1 1 100%;
+        width: 100%;
+        font-size: 15.5px;
+        font-weight: 500;
+        line-height: 1.42;
         white-space: normal;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -2411,11 +2585,13 @@
       }
 
       .db-row > .db-cell:nth-child(2) {
-        padding-left: 24px !important;
+        padding-left: 26px !important;
       }
 
-      .db-row > .db-cell:nth-child(5) {
-        display: none !important;
+      .type-pill,
+      .tag-pill {
+        padding: 4px 10px;
+        font-size: 12px;
       }
 
       .db-row > .db-cell:nth-child(6) {
@@ -2428,7 +2604,149 @@
       .time-full { display: none; }
       .time-rel { display: inline; }
 
-      /* Full-Screen Slide-In Detail Sheet on iPhone */
+      /* 6. Thumb-Zone Floating Bottom Composer Dock (ChatGPT iOS Style) */
+      .pill-composer {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px) + var(--vv-bottom, 0px));
+        z-index: 75;
+        margin-bottom: 0;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 6px;
+        padding: 8px 8px 8px 16px;
+        border-radius: 26px;
+        background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid var(--border-strong);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+        transition: bottom 0.14s ease, opacity 0.18s ease, transform 0.18s ease, border-radius 0.16s ease;
+      }
+
+      body.peek-open .pill-composer,
+      body.mobile-nav-open .pill-composer,
+      body.in-select-mode .pill-composer {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(16px);
+      }
+
+      /* Collapsed dock: single sleek pill row */
+      .pill-composer:not(.expanded) .pill-trigger {
+        display: none !important;
+      }
+
+      /* Expanded dock: attribute pills on Row 1, Input + Send on Row 2 */
+      .pill-composer.expanded {
+        border-radius: 20px;
+        padding: 10px 10px 9px 14px;
+      }
+
+      .pill-composer .pill-trigger {
+        order: 1;
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
+      .pill-composer input {
+        order: 10;
+        flex: 1 1 calc(100% - 48px);
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.35;
+        padding: 4px 2px;
+      }
+
+      .pill-composer .send-circle-btn {
+        order: 11;
+        margin-left: auto;
+        width: 36px;
+        height: 36px;
+      }
+
+      /* Prevent iOS Safari auto-zoom on every text input / textarea */
+      .clean-input,
+      .search-wrap input,
+      .notion-textarea,
+      .note-composer textarea {
+        font-size: 16px !important;
+      }
+
+      /* 7. Native iOS Bottom Sheet for All Popovers */
+      .popover-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 155;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+      }
+
+      .popover-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .popover {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: var(--vv-bottom, 0px) !important;
+        top: auto !important;
+        z-index: 160;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: min(74dvh, 500px);
+        overflow-y: auto;
+        border-radius: 22px 22px 0 0;
+        border-top: 1px solid var(--border-strong);
+        padding: 8px 14px calc(20px + env(safe-area-inset-bottom, 0px));
+        gap: 3px;
+        box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .popover::before {
+        content: "";
+        display: block;
+        width: 36px;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--border-strong);
+        margin: 2px auto 8px;
+        flex-shrink: 0;
+      }
+
+      .popover-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-muted);
+        padding: 4px 8px 8px;
+      }
+
+      .popover-option {
+        min-height: 44px;
+        padding: 9px 10px;
+        border-radius: 10px;
+        font-size: 14.5px;
+      }
+
+      .popover-swatch {
+        width: 24px;
+        height: 24px;
+      }
+
+      .popover-swatch-row {
+        gap: 10px;
+        padding: 4px 0;
+      }
+
+      /* 8. Full-Screen Slide-In Detail Sheet on iPhone */
       .peek-drawer {
         position: fixed;
         inset: 0;
@@ -2464,8 +2782,8 @@
 
       #detail-close-btn {
         width: auto;
-        height: 32px;
-        padding: 0 10px 0 8px;
+        height: 34px;
+        padding: 0 12px 0 9px;
         gap: 5px;
         display: inline-flex;
         align-items: center;
@@ -2478,14 +2796,23 @@
         transform: rotate(180deg);
       }
 
+      #detail-delete-btn {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(224, 82, 76, 0.12);
+        color: #e0524c;
+        font-size: 12.5px;
+        font-weight: 500;
+      }
+
       .mobile-back-label {
         display: inline;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 500;
       }
 
       .peek-scroll {
-        padding: 20px 18px calc(36px + env(safe-area-inset-bottom, 0px));
+        padding: 20px 18px calc(40px + env(safe-area-inset-bottom, 0px));
         -webkit-overflow-scrolling: touch;
       }
 
@@ -2494,18 +2821,30 @@
         margin-bottom: 16px;
       }
 
-      .prop-label {
-        width: 102px;
+      .prop-row {
+        min-height: 40px;
       }
 
-      .popover {
-        max-width: calc(100vw - 24px);
-        max-height: min(68dvh, 420px);
-        overflow-y: auto;
+      .prop-label {
+        width: 96px;
+      }
+
+      .note-composer-bar > span {
+        display: none;
+      }
+
+      .note-composer-bar {
+        justify-content: flex-end;
+      }
+
+      #add-comment-btn {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 13.5px;
       }
 
       .toast {
-        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        bottom: calc(74px + env(safe-area-inset-bottom, 0px));
         max-width: calc(100vw - 32px);
         white-space: nowrap;
         overflow: hidden;
@@ -2532,6 +2871,7 @@
 
     <div class="nav-section-header">
       <span class="nav-section-label">生活分類</span>
+      <button class="sidebar-edit-btn" type="button" id="sidebar-edit-btn">管理</button>
     </div>
     <div class="project-list" id="project-list"></div>
 
@@ -2605,7 +2945,10 @@
 
     <div class="page-scroll">
       <div class="page-container">
-        <!-- ChatGPT-Style Pill Composer -->
+        <!-- Mobile 1-Tap Category Switcher Rail -->
+        <div class="mobile-cat-rail" id="mobile-cat-rail"></div>
+
+        <!-- ChatGPT-Style Pill Composer (Floats at Thumb Zone on Mobile) -->
         <form class="pill-composer" id="quick-add-form">
           <button class="pill-trigger" type="button" id="quick-proj-btn" style="display:none;"></button>
           <input
@@ -2735,7 +3078,8 @@
     </div>
   </aside>
 
-  <!-- Reusable Floating Popover -->
+  <!-- Reusable Floating Popover / Mobile Bottom Sheet -->
+  <div class="popover-backdrop" id="popover-backdrop"></div>
   <div class="popover" id="popover"></div>
 
   <div class="confirm-overlay" id="confirm-overlay">
@@ -2864,14 +3208,14 @@
     ];
 
     const SORT_ITEMS = [
-      { value: "updated_desc", label: "Modified：新到舊" },
-      { value: "updated_asc", label: "Modified：舊到新" },
-      { value: "created_desc", label: "Opened：新到舊" },
-      { value: "created_asc", label: "Opened：舊到新" },
-      { value: "priority_desc", label: "Priority：高到低" },
-      { value: "priority_asc", label: "Priority：低到高" },
-      { value: "type_asc", label: "Type：Task → Goal" },
-      { value: "type_desc", label: "Type：Goal → Task" }
+      { value: "updated_desc", label: "Modified：新到舊", shortLabel: "最近更新" },
+      { value: "updated_asc", label: "Modified：舊到新", shortLabel: "最早更新" },
+      { value: "created_desc", label: "Opened：新到舊", shortLabel: "最新建立" },
+      { value: "created_asc", label: "Opened：舊到新", shortLabel: "最早建立" },
+      { value: "priority_desc", label: "Priority：高到低", shortLabel: "優先級 ↓" },
+      { value: "priority_asc", label: "Priority：低到高", shortLabel: "優先級 ↑" },
+      { value: "type_asc", label: "Type：Task → Goal", shortLabel: "類型 A-Z" },
+      { value: "type_desc", label: "Type：Goal → Task", shortLabel: "類型 Z-A" }
     ];
 
     function readJsonStorage(key, fallback) {
@@ -2908,6 +3252,7 @@
       editingCommentId: null,
       descDirty: false,
       selectMode: false,
+      sidebarEditing: false,
       checkedIssueIds: new Set()
     };
 
@@ -3202,7 +3547,9 @@
     }
 
     function setSyncStatus(text) {
-      document.getElementById("sync-status").textContent = text;
+      const el = document.getElementById("sync-status");
+      el.textContent = text;
+      el.dataset.idle = text === "已同步" ? "1" : "0";
     }
 
     function pad2(n) { return String(n).padStart(2, "0"); }
@@ -3328,16 +3675,29 @@
       );
     }
 
-    /* ================= Custom Popover Menu ================= */
+    /* ================= Custom Popover Menu / Mobile Bottom Sheet ================= */
     const popoverEl = document.getElementById("popover");
+    const popoverBackdropEl = document.getElementById("popover-backdrop");
 
     function closePopover() {
       popoverEl.classList.remove("open");
+      popoverBackdropEl.classList.remove("open");
       popoverEl.innerHTML = "";
     }
 
+    popoverBackdropEl.addEventListener("click", e => {
+      e.stopPropagation();
+      closePopover();
+    });
+
     function positionPopover(anchorEl) {
       popoverEl.classList.add("open");
+      popoverBackdropEl.classList.add("open");
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        popoverEl.style.top = "";
+        popoverEl.style.left = "";
+        return;
+      }
       const rect = anchorEl.getBoundingClientRect();
       const popRect = popoverEl.getBoundingClientRect();
       let top = rect.bottom + 6;
@@ -3536,7 +3896,8 @@
         detailPane.contains(e.target) ||
         confirmOverlayEl.contains(e.target) ||
         authOverlayEl.contains(e.target) ||
-        popoverEl.contains(e.target)
+        popoverEl.contains(e.target) ||
+        popoverBackdropEl.contains(e.target)
       );
     }, true);
 
@@ -3548,6 +3909,7 @@
         confirmOverlayEl.contains(e.target) ||
         authOverlayEl.contains(e.target) ||
         popoverEl.contains(e.target) ||
+        popoverBackdropEl.contains(e.target) ||
         e.target.closest(".db-row") ||
         e.target.closest(".db-cell") ||
         e.target.closest("#select-mode-btn") ||
@@ -3560,6 +3922,17 @@
     document.addEventListener("click", e => {
       if (popoverEl.classList.contains("open") && !popoverEl.contains(e.target)) {
         closePopover();
+      }
+      const quickForm = document.getElementById("quick-add-form");
+      const quickInput = document.getElementById("new-task-input");
+      if (
+        quickForm.classList.contains("expanded") &&
+        !quickForm.contains(e.target) &&
+        !popoverEl.contains(e.target) &&
+        !popoverBackdropEl.contains(e.target) &&
+        !quickInput.value.trim()
+      ) {
+        setComposerExpanded(false);
       }
       if (state.selectedIssueId && !clickWasInsideProtected) {
         flushDetailEdits();
@@ -4120,7 +4493,12 @@
 
         if (res.issueCreate.success && res.issueCreate.issue) {
           state.issues.unshift(res.issueCreate.issue);
-          document.getElementById("new-task-input").value = "";
+          const inputEl = document.getElementById("new-task-input");
+          inputEl.value = "";
+          if (isMobileViewport()) {
+            inputEl.blur();
+            setComposerExpanded(false);
+          }
           state.quickAddPriority = 0;
           state.quickAddLabelIds = [];
           state.quickAddType = state.typeFilter !== "all" ? state.typeFilter : "task";
@@ -4478,7 +4856,69 @@
     }
 
     /* ================= Rendering ================= */
+    function renderMobileCatRail() {
+      const railEl = document.getElementById("mobile-cat-rail");
+      if (!railEl) return;
+      railEl.innerHTML = "";
+
+      const totalOpen = state.issues.filter(i => getBucket(i) !== "closed").length;
+      const allVisual = getProjectVisual(null);
+
+      const makeCatChip = (id, name, visual, openCount) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        const isActive = state.selectedProjectId === id;
+        chip.className = "mobile-cat-chip" + (isActive ? " active" : "");
+        chip.style.setProperty("--cat-color", visual.color);
+
+        const ic = document.createElement("span");
+        ic.style.cssText = `display:inline-flex; align-items:center; color:${visual.color};`;
+        ic.innerHTML = makeProjectSvg(visual.svg, 13);
+
+        const txt = document.createElement("span");
+        txt.textContent = name;
+        chip.append(ic, txt);
+
+        if (openCount > 0) {
+          const cnt = document.createElement("span");
+          cnt.className = "mobile-cat-count";
+          cnt.textContent = String(openCount);
+          chip.appendChild(cnt);
+        }
+
+        chip.addEventListener("click", () => {
+          state.selectedProjectId = id;
+          state.checkedIssueIds.clear();
+          state.selectMode = false;
+          state.labelFilter = null;
+          state.quickAddLabelIds = [];
+          localStorage.setItem("selected_project_id", id);
+          renderAll();
+          requestAnimationFrame(() => {
+            const activeChip = railEl.querySelector(".mobile-cat-chip.active");
+            if (activeChip) activeChip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          });
+        });
+        return chip;
+      };
+
+      railEl.appendChild(makeCatChip(ALL_PROJECTS_ID, "所有專案", allVisual, totalOpen));
+      for (const project of state.projects) {
+        const openCount = state.issues.filter(
+          i => i.project && i.project.id === project.id && getBucket(i) !== "closed"
+        ).length;
+        railEl.appendChild(makeCatChip(project.id, project.name, getProjectVisual(project), openCount));
+      }
+    }
+
     function renderSidebar() {
+      const sidebarEl = document.getElementById("sidebar");
+      const editBtnEl = document.getElementById("sidebar-edit-btn");
+      sidebarEl.classList.toggle("editing", state.sidebarEditing);
+      if (editBtnEl) editBtnEl.textContent = state.sidebarEditing ? "完成" : "管理";
+
+      renderMobileCatRail();
+
       const listEl = document.getElementById("project-list");
       listEl.innerHTML = "";
 
@@ -4911,7 +5351,29 @@
       }
 
       const currentSort = SORT_ITEMS.find(s => s.value === state.sortBy);
-      document.getElementById("sort-menu-label").textContent = currentSort ? currentSort.label : "排序";
+      const isMob = window.matchMedia("(max-width: 768px)").matches;
+      document.getElementById("sort-menu-label").textContent = currentSort
+        ? (isMob ? currentSort.shortLabel : currentSort.label)
+        : "排序";
+
+      const taskInputEl = document.getElementById("new-task-input");
+      if (isMob) {
+        const activeProj = state.selectedProjectId === ALL_PROJECTS_ID
+          ? (state.projects.find(p => p.id === state.quickAddProjectId) || state.projects[0])
+          : state.projects.find(p => p.id === state.selectedProjectId);
+        taskInputEl.placeholder = activeProj
+          ? `+ 新增項目到「${activeProj.name}」...`
+          : "+ 新增項目或想法...";
+      } else {
+        taskInputEl.placeholder = "今天想記錄或安排什麼？輸入標題按 Enter 直接同步...";
+      }
+
+      const commentInputEl = document.getElementById("new-comment-input");
+      if (commentInputEl) {
+        commentInputEl.placeholder = isMob
+          ? "記下新筆記或進度..."
+          : "在討論串記下新筆記... (Cmd / Ctrl + Enter 送出)";
+      }
 
       renderLabelBar();
     }
@@ -4922,6 +5384,7 @@
 
       const baseIssues = getScopedIssues(false);
       const scopedLabels = getScopedLabels();
+      bar.classList.toggle("empty-labels", scopedLabels.length === 0);
       if (state.labelFilter && !scopedLabels.some(l => l.id === state.labelFilter)) {
         state.labelFilter = null;
       }
@@ -5007,7 +5470,8 @@
       const inSelectMode = state.selectMode || checkedCount > 0;
 
       grid.classList.toggle("select-mode", inSelectMode);
-      selectModeBtn.textContent = state.selectMode ? "完成多選" : "多選";
+      document.body.classList.toggle("in-select-mode", inSelectMode);
+      selectModeBtn.textContent = state.selectMode ? "完成" : "多選";
       selectModeBtn.classList.toggle("active", state.selectMode);
 
       if (inSelectMode && items.length > 0) {
@@ -5198,9 +5662,10 @@
         typeCell.appendChild(typePill);
 
         // Col 3: Priority Pill
+        const prioVal = issue.priority || 0;
         const prioCell = document.createElement("div");
-        prioCell.className = "db-cell";
-        const prioPill = createPriorityPill(issue.priority || 0, true, true);
+        prioCell.className = "db-cell" + (prioVal === 0 ? " is-prio-0" : "");
+        const prioPill = createPriorityPill(prioVal, true, true);
         prioPill.addEventListener("click", e => {
           e.stopPropagation();
           openPopover(
@@ -5583,6 +6048,48 @@
 
     function closeMobileSidebar() {
       document.body.classList.remove("mobile-nav-open");
+      if (state.sidebarEditing) {
+        state.sidebarEditing = false;
+        renderSidebar();
+      }
+    }
+
+    function setComposerExpanded(expanded) {
+      document.getElementById("quick-add-form").classList.toggle("expanded", expanded);
+      document.body.classList.toggle("composer-open", expanded);
+    }
+
+    document.getElementById("sidebar-edit-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      state.sidebarEditing = !state.sidebarEditing;
+      renderSidebar();
+    });
+
+    const quickTaskInputEl = document.getElementById("new-task-input");
+    quickTaskInputEl.addEventListener("focus", () => {
+      setComposerExpanded(true);
+    });
+    quickTaskInputEl.addEventListener("input", () => {
+      if (quickTaskInputEl.value.trim()) setComposerExpanded(true);
+    });
+
+    // Track iOS virtual keyboard height so floating bottom composer rides smoothly above keyboard
+    if (window.visualViewport) {
+      const syncViewportOffset = () => {
+        if (!isMobileViewport()) {
+          document.documentElement.style.setProperty("--vv-bottom", "0px");
+          return;
+        }
+        const vv = window.visualViewport;
+        const kbHeight = Math.max(0, Math.round(window.innerHeight - (vv.height + vv.offsetTop)));
+        document.documentElement.style.setProperty("--vv-bottom", `${kbHeight}px`);
+      };
+      window.visualViewport.addEventListener("resize", syncViewportOffset);
+      window.visualViewport.addEventListener("scroll", syncViewportOffset);
+      window.addEventListener("resize", () => {
+        syncViewportOffset();
+        renderPageHeader();
+      });
     }
 
     function setSidebarCollapsed(collapsed) {
