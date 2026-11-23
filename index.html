@@ -1,0 +1,5941 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" id="meta-theme-color" content="#191919" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="生活管理" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+  <title>生活管理 — Linear 個人工作區</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg-canvas: #ffffff;
+      --bg-sidebar: #f7f7f5;
+      --bg-hover: #efefed;
+      --bg-active: #ebebea;
+      --bg-elevated: #ffffff;
+      --bg-subtle: #f7f7f5;
+      --border: #ededeb;
+      --border-strong: #dfdfdc;
+      --ink: #37352f;
+      --ink-strong: #1f1e1b;
+      --ink-muted: #787774;
+      --ink-faint: #9b9a97;
+      --blue: #2383e2;
+      --blue-hover: #1b6ec2;
+
+      /* Status Pills (Notion soft palette) */
+      --status-open-bg: #f1f1ef;
+      --status-open-ink: #5a5955;
+      --status-open-dot: #9b9a97;
+
+      --status-prog-bg: #fdecc8;
+      --status-prog-ink: #8a5612;
+      --status-prog-dot: #d9730d;
+
+      --status-done-bg: #dbeddb;
+      --status-done-ink: #1f5c3a;
+      --status-done-dot: #2f855a;
+
+      /* Priority Pills */
+      --prio-0-bg: transparent;
+      --prio-0-ink: #9b9a97;
+      --prio-1-bg: #ffe2dd;
+      --prio-1-ink: #b02a1d;
+      --prio-2-bg: #fadec9;
+      --prio-2-ink: #9c4a12;
+      --prio-3-bg: #d3e5ef;
+      --prio-3-ink: #1b5a8a;
+      --prio-4-bg: #f1f1ef;
+      --prio-4-ink: #5a5955;
+
+      --shadow-pill: 0 2px 14px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.06);
+      --shadow-popover: 0 8px 28px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+      --shadow-peek: -12px 0 36px rgba(0, 0, 0, 0.08);
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-canvas: #191919;
+        --bg-sidebar: #202020;
+        --bg-hover: #2c2c2c;
+        --bg-active: #323232;
+        --bg-elevated: #252525;
+        --bg-subtle: #202020;
+        --border: #2f2f2f;
+        --border-strong: #3d3d3d;
+        --ink: #d4d4d4;
+        --ink-strong: #f0f0ef;
+        --ink-muted: #9b9a97;
+        --ink-faint: #6f6e6b;
+        --blue: #2383e2;
+        --blue-hover: #3694f0;
+
+        --status-open-bg: #2c2c2c;
+        --status-open-ink: #c7c7c5;
+        --status-open-dot: #8f8e8b;
+
+        --status-prog-bg: rgba(217, 115, 13, 0.22);
+        --status-prog-ink: #f6b365;
+        --status-prog-dot: #e68a2e;
+
+        --status-done-bg: rgba(47, 133, 90, 0.24);
+        --status-done-ink: #72d2a0;
+        --status-done-dot: #48bb78;
+
+        --prio-0-bg: transparent;
+        --prio-0-ink: #6f6e6b;
+        --prio-1-bg: rgba(229, 83, 75, 0.22);
+        --prio-1-ink: #ff8c82;
+        --prio-2-bg: rgba(217, 115, 13, 0.22);
+        --prio-2-ink: #f6b365;
+        --prio-3-bg: rgba(56, 139, 253, 0.2);
+        --prio-3-ink: #7bb8ff;
+        --prio-4-bg: #2c2c2c;
+        --prio-4-ink: #b5b5b3;
+
+        --shadow-pill: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+        --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 255, 255, 0.09);
+        --shadow-peek: -12px 0 40px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg-canvas: #191919;
+      --bg-sidebar: #202020;
+      --bg-hover: #2c2c2c;
+      --bg-active: #323232;
+      --bg-elevated: #252525;
+      --bg-subtle: #202020;
+      --border: #2f2f2f;
+      --border-strong: #3d3d3d;
+      --ink: #d4d4d4;
+      --ink-strong: #f0f0ef;
+      --ink-muted: #9b9a97;
+      --ink-faint: #6f6e6b;
+      --blue: #2383e2;
+      --blue-hover: #3694f0;
+
+      --status-open-bg: #2c2c2c;
+      --status-open-ink: #c7c7c5;
+      --status-open-dot: #8f8e8b;
+
+      --status-prog-bg: rgba(217, 115, 13, 0.22);
+      --status-prog-ink: #f6b365;
+      --status-prog-dot: #e68a2e;
+
+      --status-done-bg: rgba(47, 133, 90, 0.24);
+      --status-done-ink: #72d2a0;
+      --status-done-dot: #48bb78;
+
+      --prio-0-bg: transparent;
+      --prio-0-ink: #6f6e6b;
+      --prio-1-bg: rgba(229, 83, 75, 0.22);
+      --prio-1-ink: #ff8c82;
+      --prio-2-bg: rgba(217, 115, 13, 0.22);
+      --prio-2-ink: #f6b365;
+      --prio-3-bg: rgba(56, 139, 253, 0.2);
+      --prio-3-ink: #7bb8ff;
+      --prio-4-bg: #2c2c2c;
+      --prio-4-ink: #b5b5b3;
+
+      --shadow-pill: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 255, 255, 0.09);
+      --shadow-peek: -12px 0 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-canvas);
+      color: var(--ink);
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    svg { display: block; flex-shrink: 0; }
+
+    .page-scroll::-webkit-scrollbar,
+    .peek-scroll::-webkit-scrollbar,
+    .project-list::-webkit-scrollbar,
+    .db-table-wrap::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .page-scroll::-webkit-scrollbar-track,
+    .peek-scroll::-webkit-scrollbar-track,
+    .project-list::-webkit-scrollbar-track,
+    .db-table-wrap::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .page-scroll::-webkit-scrollbar-thumb,
+    .peek-scroll::-webkit-scrollbar-thumb,
+    .project-list::-webkit-scrollbar-thumb,
+    .db-table-wrap::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--ink-faint) 32%, transparent);
+      border-radius: 999px;
+    }
+
+    .page-scroll::-webkit-scrollbar-thumb:hover,
+    .peek-scroll::-webkit-scrollbar-thumb:hover,
+    .project-list::-webkit-scrollbar-thumb:hover,
+    .db-table-wrap::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in srgb, var(--ink-muted) 50%, transparent);
+    }
+
+    /* ================= 1. Whisper-Soft Sidebar (Notion + ChatGPT) ================= */
+    #sidebar {
+      width: clamp(188px, 21vw, 232px);
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 12px 10px;
+      transition: width 0.26s cubic-bezier(0.22, 1, 0.36, 1), padding 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+      overflow: hidden;
+    }
+
+    body.sidebar-collapsed #sidebar {
+      width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      border-right: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px 12px;
+    }
+
+    .workspace-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-strong);
+    }
+
+    .workspace-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--ink-strong);
+      color: var(--bg-canvas);
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-hover);
+      color: var(--ink-strong);
+    }
+
+    .nav-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 10px 6px;
+    }
+
+    .nav-section-label {
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink-faint);
+    }
+
+    .hover-row-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-faint);
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.14s ease, background 0.14s ease, color 0.14s ease;
+    }
+
+    .nav-item:hover .hover-row-btn,
+    .db-row:hover .hover-row-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .hover-tag-btn:hover {
+      background: var(--bg-active);
+      color: var(--ink-strong);
+    }
+
+    .hover-del-btn:hover {
+      background: rgba(224, 82, 76, 0.14);
+      color: #ff8078;
+    }
+
+    :root[data-theme="light"] .hover-del-btn:hover {
+      color: #c5302a;
+    }
+
+    .row-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .project-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-project-group {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-radius: 8px;
+      transition: opacity 0.15s ease;
+    }
+
+    .nav-project-group.dragging {
+      opacity: 0.4;
+    }
+
+    .nav-project-group.drag-over-top::before,
+    .nav-project-group.drag-over-bottom::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 2px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .nav-project-group.drag-over-top::before { top: -2px; }
+    .nav-project-group.drag-over-bottom::after { bottom: -2px; }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 7px 10px 7px 6px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.14s, color 0.14s;
+    }
+
+    .nav-item[draggable="true"] {
+      cursor: grab;
+    }
+
+    .nav-item[draggable="true"]:active {
+      cursor: grabbing;
+    }
+
+    .nav-item.parent-active {
+      color: var(--ink-strong);
+      font-weight: 500;
+    }
+
+    .nav-chevron {
+      width: 16px;
+      height: 16px;
+      display: inline-grid;
+      place-items: center;
+      color: var(--ink-faint);
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), color 0.12s, background 0.12s;
+    }
+
+    .nav-chevron:hover {
+      color: var(--ink-strong);
+      background: var(--bg-active);
+    }
+
+    .nav-chevron.expanded {
+      transform: rotate(90deg);
+    }
+
+    .nav-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 2px 0 4px 16px;
+      padding-left: 10px;
+      border-left: 1px solid var(--border);
+    }
+
+    .nav-subitem {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 400;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.14s, color 0.14s;
+    }
+
+    .nav-subitem:hover {
+      background: var(--bg-hover);
+      color: var(--ink-strong);
+    }
+
+    .nav-subitem.active {
+      background: var(--bg-active);
+      color: var(--ink-strong);
+      font-weight: 500;
+    }
+
+    .nav-subitem .hover-del-btn {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-subitem.has-del:hover .nav-count {
+      opacity: 0;
+    }
+
+    .nav-subitem:hover .hover-row-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-subdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .nav-sublabel {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-subadd {
+      color: var(--ink-faint);
+      font-size: 12px;
+    }
+
+    .nav-item .hover-del-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .nav-item.has-del:hover .nav-count {
+      opacity: 0;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--ink-strong);
+    }
+
+    .nav-item.active {
+      background: var(--bg-active);
+      color: var(--ink-strong);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--icon-color, var(--ink-muted)) 14%, transparent);
+      color: var(--icon-color, var(--ink-muted));
+      transition: background 0.14s, color 0.14s;
+    }
+
+    .nav-item.active .nav-icon {
+      background: color-mix(in srgb, var(--icon-color, var(--ink-strong)) 22%, transparent);
+    }
+
+    .nav-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-count {
+      font-size: 11.5px;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-hover) 70%, transparent);
+      transition: opacity 0.14s ease;
+    }
+
+    .sidebar-footer {
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .new-project-box {
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      padding: 10px;
+      margin-bottom: 6px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      box-shadow: var(--shadow-pill);
+    }
+
+    .new-project-box.open { display: flex; }
+
+    .clean-input {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      background: var(--bg-canvas);
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    .clean-input:focus { border-color: var(--blue); outline: none; }
+
+    /* ================= 2. Main Document Workspace ================= */
+    .workspace {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-canvas);
+      overflow: hidden;
+      container-type: inline-size;
+      container-name: workspace;
+    }
+
+    /* Top Unified Context Bar */
+    .topbar {
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 4px 2px;
+    }
+
+    #crumb-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--icon-color, var(--ink-muted)) 15%, transparent);
+      color: var(--icon-color, var(--ink-strong));
+    }
+
+    #crumb-name {
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--ink-strong);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .sync-text {
+      font-size: 12px;
+      color: var(--ink-faint);
+      padding: 0 4px;
+    }
+
+    /* Scrollable Page Canvas */
+    .page-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .page-container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px clamp(16px, 4vw, 48px) 88px;
+      transition: padding 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.peek-open .page-container {
+      padding-left: clamp(14px, 2.5vw, 24px);
+      padding-right: clamp(14px, 2.5vw, 24px);
+    }
+
+    .proj-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+
+    .hero-active-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--label-color, var(--blue)) 40%, var(--border));
+      background: color-mix(in srgb, var(--label-color, var(--blue)) 14%, var(--bg-subtle));
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.12s, background 0.12s;
+    }
+
+    .hero-active-label:hover {
+      background: color-mix(in srgb, var(--label-color, var(--blue)) 22%, var(--bg-subtle));
+    }
+
+    .hero-label-close {
+      font-size: 13px;
+      line-height: 1;
+      color: var(--ink-muted);
+      margin-left: 1px;
+    }
+
+    .hero-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .hero-progress-track {
+      width: 44px;
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ink-faint) 24%, transparent);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hero-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent-color, var(--blue));
+      transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero-meta-sep {
+      color: var(--border-strong);
+    }
+
+    /* ChatGPT-Inspired Floating Pill Composer */
+    .pill-composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      padding: 7px 8px 7px 18px;
+      box-shadow: var(--shadow-pill);
+      margin-bottom: 30px;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .pill-composer:focus-within {
+      box-shadow: 0 4px 20px rgba(35, 131, 226, 0.14), 0 0 0 1.5px var(--blue);
+    }
+
+    .pill-composer input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      min-width: 0;
+    }
+
+    .pill-composer input::placeholder {
+      color: var(--ink-faint);
+    }
+
+    .pill-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s;
+    }
+
+    .pill-trigger:hover { background: var(--bg-active); }
+
+    .send-circle-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: var(--ink-strong);
+      color: var(--bg-canvas);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: opacity 0.12s, transform 0.1s;
+    }
+
+    .send-circle-btn:hover { opacity: 0.88; }
+    .send-circle-btn:active { transform: scale(0.95); }
+
+    /* Segmented Pill View Bar (Filter / Search / Sort) */
+    .view-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .view-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      max-width: 100%;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      scrollbar-width: none;
+    }
+
+    .view-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .view-tab {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color 0.14s, background 0.14s, box-shadow 0.14s;
+    }
+
+    .view-tab:hover {
+      color: var(--ink-strong);
+    }
+
+    .view-tab.active {
+      background: var(--bg-elevated);
+      color: var(--ink-strong);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .view-tab-count {
+      font-size: 11.5px;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .view-tab.active .view-tab-count {
+      color: var(--ink-muted);
+    }
+
+    .view-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .search-wrap.open {
+      background: var(--bg-elevated);
+      border-color: var(--border-strong);
+    }
+
+    .search-wrap input {
+      width: 0;
+      opacity: 0;
+      border: none;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: width 0.18s ease, opacity 0.15s ease;
+    }
+
+    .search-wrap.open input {
+      width: 160px;
+      opacity: 1;
+    }
+
+    .toolbar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--bg-active);
+      color: var(--ink-strong);
+    }
+
+    .toolbar-btn.active {
+      background: color-mix(in srgb, var(--blue) 16%, var(--bg-subtle));
+      color: var(--blue);
+      border-color: color-mix(in srgb, var(--blue) 40%, var(--border));
+    }
+
+    .batch-del-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border: 1px solid rgba(224, 82, 76, 0.35);
+      border-radius: 999px;
+      background: rgba(224, 82, 76, 0.12);
+      color: #ff8078;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.14s, border-color 0.14s;
+    }
+
+    :root[data-theme="light"] .batch-del-btn {
+      color: #c5302a;
+      background: rgba(224, 82, 76, 0.1);
+    }
+
+    .batch-del-btn:hover {
+      background: rgba(224, 82, 76, 0.2);
+      border-color: rgba(224, 82, 76, 0.55);
+    }
+
+    .batch-del-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ================= Modern Rounded Ticket List Card ================= */
+    .db-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .db-grid {
+      display: grid;
+      grid-template-columns: minmax(190px, 1fr) 88px 88px 100px 146px 150px;
+      min-width: 0;
+    }
+
+    .db-head-cell {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg-subtle) 55%, transparent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .db-head-cell:first-child { padding-left: 16px; gap: 10px; }
+    .db-head-cell:last-child { padding-right: 16px; }
+
+    .db-head-cell.sortable {
+      cursor: pointer;
+      transition: color 0.1s;
+    }
+
+    .db-head-cell.sortable:hover {
+      color: var(--ink-strong);
+    }
+
+    .db-head-cell.sorted { color: var(--blue); font-weight: 600; }
+
+    .db-head-cell.align-right {
+      justify-content: flex-end;
+    }
+
+    .db-row {
+      display: contents;
+    }
+
+    .db-row:hover .db-cell {
+      background: var(--bg-hover);
+    }
+
+    .db-row.selected .db-cell {
+      background: color-mix(in srgb, var(--blue) 8%, var(--bg-elevated));
+    }
+
+    .db-row.checked .db-cell {
+      background: color-mix(in srgb, var(--blue) 11%, var(--bg-elevated));
+    }
+
+    .db-cell {
+      display: flex;
+      align-items: center;
+      padding: 13px 12px;
+      min-height: 50px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 0;
+    }
+
+    .db-row:last-child .db-cell {
+      border-bottom: none;
+    }
+
+    /* Col 1: Ticket Title + Project Badge + Note Count */
+    .name-cell {
+      justify-content: space-between;
+      gap: 10px;
+      padding-left: 12px;
+    }
+
+    .name-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .row-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      color: transparent;
+      cursor: pointer;
+      transform: scale(0.46);
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .row-dot svg {
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.14s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .row-dot.open { background: var(--status-open-dot); }
+    .row-dot.progress { background: var(--status-prog-dot); }
+    .row-dot.closed { background: var(--status-done-dot); }
+
+    .db-grid.select-mode .row-dot,
+    .row-dot:hover {
+      transform: scale(0.92);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink-muted) 25%, transparent);
+    }
+
+    .row-dot:hover svg {
+      color: #ffffff;
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
+
+    .db-row.checked .row-dot {
+      transform: scale(1);
+      background: var(--blue);
+      color: #ffffff;
+      box-shadow: none;
+    }
+
+    .db-row.checked .row-dot svg {
+      opacity: 1;
+      transform: scale(1);
+      color: #ffffff;
+    }
+
+    .ticket-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-strong);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .db-row.is-closed .ticket-name {
+      text-decoration: line-through;
+      color: var(--ink-muted);
+    }
+
+    .proj-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+
+    .note-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      font-size: 12px;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+
+    /* Project Sub-Labels (Filter Bar & Ticket Chips) */
+    .label-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .label-filter-wrap {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .label-filter-wrap:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-strong);
+    }
+
+    .label-filter-wrap.active {
+      background: color-mix(in srgb, var(--label-color, var(--blue)) 16%, var(--bg-elevated));
+      border-color: color-mix(in srgb, var(--label-color, var(--blue)) 45%, var(--border));
+    }
+
+    .label-filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.14s ease;
+    }
+
+    .label-filter-wrap:hover .label-filter-pill,
+    .label-filter-wrap.active .label-filter-pill {
+      color: var(--ink-strong);
+    }
+
+    .label-filter-wrap.active .label-filter-pill {
+      font-weight: 600;
+    }
+
+    .label-filter-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--label-color, var(--blue));
+    }
+
+    .label-filter-count {
+      font-size: 11px;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .label-filter-del {
+      display: inline-grid;
+      place-items: center;
+      width: 0;
+      height: 18px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ink-faint);
+      font-size: 13px;
+      line-height: 1;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+      cursor: pointer;
+      transition: width 0.14s ease, opacity 0.14s ease, margin 0.14s ease, color 0.12s, background 0.12s;
+    }
+
+    .label-filter-wrap:hover .label-filter-del {
+      width: 18px;
+      margin-right: 4px;
+      opacity: 0.75;
+    }
+
+    .label-filter-del:hover {
+      opacity: 1 !important;
+      color: #ff8078;
+      background: rgba(224, 82, 76, 0.16);
+    }
+
+    :root[data-theme="light"] .label-filter-del:hover {
+      color: #c5302a;
+    }
+
+    .label-add-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px dashed var(--border-strong);
+      background: transparent;
+      color: var(--ink-faint);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.12s, border-color 0.12s, background 0.12s;
+    }
+
+    .label-add-pill:hover {
+      color: var(--ink-strong);
+      border-color: var(--ink-muted);
+      background: var(--bg-subtle);
+    }
+
+    .label-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border: 1px solid color-mix(in srgb, var(--label-color, var(--blue)) 28%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--label-color, var(--blue)) 14%, var(--bg-subtle));
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: filter 0.12s;
+    }
+
+    .label-chip:hover { filter: brightness(0.94); }
+
+    .label-chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--label-color, var(--blue));
+    }
+
+    /* Custom Tag Pills (Priority & Status — ZERO native <select>) */
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.1s;
+    }
+
+    .tag-pill:hover { filter: brightness(0.95); }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-open { background: var(--status-open-bg); color: var(--status-open-ink); }
+    .status-open .status-dot { background: var(--status-open-dot); }
+    .status-progress { background: var(--status-prog-bg); color: var(--status-prog-ink); }
+    .status-progress .status-dot { background: var(--status-prog-dot); }
+    .status-closed { background: var(--status-done-bg); color: var(--status-done-ink); }
+    .status-closed .status-dot { background: var(--status-done-dot); }
+
+    .prio-pill { border-radius: 999px; }
+    .prio-0 { background: var(--prio-0-bg); color: var(--prio-0-ink); }
+    .prio-1 { background: var(--prio-1-bg); color: var(--prio-1-ink); }
+    .prio-2 { background: var(--prio-2-bg); color: var(--prio-2-ink); }
+    .prio-3 { background: var(--prio-3-bg); color: var(--prio-3-ink); }
+    .prio-4 { background: var(--prio-4-bg); color: var(--prio-4-ink); }
+
+    /* Type Pills (Task / Project / Habit / Issue / Goal) */
+    .type-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border: none;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--type-color, var(--ink-muted)) 11%, var(--bg-subtle));
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.12s, background 0.12s;
+    }
+
+    .type-pill:hover { filter: brightness(0.94); }
+
+    .type-pill svg {
+      color: var(--type-color, var(--ink-muted));
+      flex-shrink: 0;
+    }
+
+    .popover-type-desc {
+      font-size: 11.5px;
+      color: var(--ink-faint);
+      margin-left: 4px;
+    }
+
+    /* Time Cells (Right-Aligned Columns) */
+    .time-cell {
+      justify-content: flex-end;
+      text-align: right;
+      font-size: 12.5px;
+      letter-spacing: 0.01em;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .time-cell:last-child { padding-right: 16px; }
+
+    .empty-db {
+      padding: 44px 20px;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 14px;
+      min-width: 0;
+    }
+
+    /* ================= 3. Push-Left Side-Peek Drawer ================= */
+    .peek-drawer {
+      position: relative;
+      width: 0;
+      min-width: 0;
+      flex-shrink: 0;
+      background: var(--bg-canvas);
+      border-left: 0 solid var(--border);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease,
+        border-left-width 0.2s ease,
+        box-shadow 0.28s ease;
+    }
+
+    .peek-drawer.open {
+      width: clamp(320px, 34vw, 440px);
+      border-left-width: 1px;
+      box-shadow: var(--shadow-peek);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .peek-drawer .peek-topbar,
+    .peek-drawer .peek-scroll {
+      width: clamp(320px, 34vw, 440px);
+      min-width: 320px;
+      transform: translateX(18px);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .peek-drawer.open .peek-topbar,
+    .peek-drawer.open .peek-scroll {
+      transform: translateX(0);
+    }
+
+    @keyframes peekFadeIn {
+      from {
+        opacity: 0.35;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .peek-drawer.open .peek-scroll.switching {
+      animation: peekFadeIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .peek-topbar {
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .peek-topbar-left, .peek-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .peek-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 26px 28px 48px;
+    }
+
+    .peek-title {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    /* Notion 2-Column Properties Table */
+    .props-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 22px;
+    }
+
+    .prop-row {
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+    }
+
+    .prop-label {
+      width: 130px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .prop-value {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px 0;
+      font-size: 13px;
+      color: var(--ink-strong);
+    }
+
+    .prop-time-val {
+      font-size: 13px;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+      padding: 3px 6px;
+    }
+
+    /* Page Body Block (Description) */
+    .page-block {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .block-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+
+    .notion-textarea {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.7;
+      padding: 6px 8px;
+      margin: 0 -8px;
+      resize: vertical;
+      outline: none;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .notion-textarea:hover { background: var(--bg-subtle); }
+    .notion-textarea:focus {
+      background: var(--bg-canvas);
+      border-color: var(--border-strong);
+    }
+
+    /* Discussion Thread (Comments) */
+    .thread-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .comment-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .comment-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-active);
+      color: var(--ink-strong);
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .comment-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .comment-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .comment-time {
+      font-size: 12px;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .comment-actions {
+      opacity: 0;
+      display: flex;
+      gap: 4px;
+      transition: opacity 0.1s;
+    }
+
+    .comment-item:hover .comment-actions { opacity: 1; }
+
+    .mini-btn {
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .mini-btn:hover { background: var(--bg-hover); color: var(--ink-strong); }
+    .mini-btn.danger:hover { color: #d44c47; }
+
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--ink-strong);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-text a {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* ChatGPT-Style Comment Input Box */
+    .note-composer {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .note-composer:focus-within {
+      background: var(--bg-canvas);
+      border-color: var(--blue);
+    }
+
+    .note-composer textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.55;
+      resize: none;
+      outline: none;
+    }
+
+    .note-composer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    .btn-subtle {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-subtle:hover { background: var(--bg-hover); }
+
+    .btn-blue {
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: none;
+      background: var(--blue);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-blue:hover { background: var(--blue-hover); }
+    .btn-blue:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ================= Custom Floating Popover ================= */
+    .popover {
+      position: fixed;
+      z-index: 100;
+      min-width: 168px;
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      box-shadow: var(--shadow-popover);
+      padding: 5px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .popover.open { display: flex; }
+
+    .popover-title {
+      font-size: 12px;
+      color: var(--ink-faint);
+      padding: 4px 8px;
+    }
+
+    .popover-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 6px 8px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .popover-option:hover { background: var(--bg-hover); }
+
+    .popover-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 2px;
+    }
+
+    .popover-label-form {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 4px 6px 6px;
+      min-width: 210px;
+    }
+
+    .popover-inline-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .popover-swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 1px 0;
+    }
+
+    .popover-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      padding: 0;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.1s ease;
+    }
+
+    .popover-swatch:hover { transform: scale(1.12); }
+    .popover-swatch.active {
+      border-color: var(--ink-strong);
+      transform: scale(1.1);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--ink-strong);
+      color: var(--bg-canvas);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s, transform 0.16s;
+      z-index: 120;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(10, 10, 10, 0.52);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s ease, visibility 0.18s ease;
+    }
+
+    .confirm-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .confirm-dialog {
+      width: min(380px, calc(100vw - 32px));
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: var(--shadow-popover);
+      padding: 22px 24px 18px;
+      transform: translateY(8px) scale(0.96);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .confirm-overlay.open .confirm-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .confirm-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-strong);
+      margin-bottom: 6px;
+    }
+
+    .confirm-desc {
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+
+    .confirm-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-pill-cancel {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .btn-pill-cancel:hover { background: var(--bg-hover); }
+
+    .btn-pill-danger {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #e0524c;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter 0.12s;
+    }
+
+    .btn-pill-danger:hover { filter: brightness(1.08); }
+
+    .sidebar-backdrop {
+      display: none;
+    }
+
+    .mobile-back-label,
+    .mobile-move-btns,
+    .time-rel {
+      display: none;
+    }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 240;
+      background: rgba(10, 10, 10, 0.62);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s ease, visibility 0.18s ease;
+    }
+
+    .auth-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .auth-dialog {
+      width: min(410px, calc(100vw - 28px));
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      box-shadow: var(--shadow-popover);
+      padding: 24px 22px 20px;
+      transform: translateY(8px) scale(0.97);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .auth-overlay.open .auth-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--blue) 14%, var(--bg-subtle));
+      color: var(--blue);
+      font-size: 11.5px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .auth-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .auth-key-input {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-canvas);
+      color: var(--ink-strong);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .auth-key-input:focus {
+      border-color: var(--blue);
+    }
+
+    .auth-paste-btn {
+      flex-shrink: 0;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .auth-paste-btn:hover { background: var(--bg-hover); }
+
+    .auth-error {
+      display: none;
+      font-size: 12.5px;
+      color: #e0524c;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
+    .auth-error.show {
+      display: block;
+    }
+
+    .btn-pill-primary {
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--blue);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .btn-pill-primary:hover { background: var(--blue-hover); }
+    .btn-pill-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    @media (hover: none) {
+      .comment-actions { opacity: 1; }
+      .hover-row-btn { opacity: 0.72; }
+      .label-filter-wrap.active .label-filter-del {
+        width: 18px;
+        margin-right: 4px;
+        opacity: 0.8;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 820px) {
+      .page-container { padding: 24px 16px 80px; }
+      body.peek-open #sidebar {
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        border-right: none;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .peek-scroll { padding: 20px 18px 40px; }
+    }
+
+    @container workspace (max-width: 850px) {
+      .db-grid {
+        grid-template-columns: minmax(170px, 1fr) 86px 86px 98px 148px;
+        min-width: 0;
+      }
+      .db-grid > .db-head-cell:nth-child(5),
+      .db-row > .db-cell:nth-child(5) {
+        display: none;
+      }
+      .view-tab {
+        padding: 5px 10px;
+        font-size: 12.5px;
+      }
+    }
+
+    @container workspace (max-width: 660px) {
+      .db-grid {
+        grid-template-columns: minmax(140px, 1fr) 84px 84px 94px;
+        min-width: 0;
+      }
+      .db-grid > .db-head-cell:nth-child(6),
+      .db-row > .db-cell:nth-child(6) {
+        display: none;
+      }
+    }
+
+    @container workspace (max-width: 620px) {
+      .hero-meta {
+        display: none;
+      }
+    }
+
+    /* ================= iPhone & Mobile Standalone PWA Layout ================= */
+    @media (max-width: 768px) {
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 88;
+        background: rgba(0, 0, 0, 0.52);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.24s ease;
+      }
+
+      body.mobile-nav-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #sidebar,
+      body.sidebar-collapsed #sidebar,
+      body.peek-open #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 90;
+        width: min(292px, 84vw);
+        padding: calc(10px + env(safe-area-inset-top, 0px)) 12px calc(14px + env(safe-area-inset-bottom, 0px));
+        border-right: 1px solid var(--border);
+        box-shadow: 16px 0 42px rgba(0, 0, 0, 0.45);
+        opacity: 1;
+        transform: translateX(-104%);
+        pointer-events: none;
+        transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      body.mobile-nav-open #sidebar {
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .mobile-move-btns {
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+        margin-right: 2px;
+      }
+
+      .mobile-move-btn {
+        width: 20px;
+        height: 22px;
+        border: none;
+        border-radius: 5px;
+        background: transparent;
+        color: var(--ink-faint);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .mobile-move-btn:active {
+        background: var(--bg-active);
+        color: var(--ink-strong);
+      }
+
+      .nav-item {
+        padding: 9px 10px;
+        font-size: 14px;
+      }
+
+      .nav-subitem {
+        padding: 7px 10px 7px 14px;
+        font-size: 13.5px;
+      }
+
+      #open-sidebar-btn {
+        display: grid !important;
+        width: 34px;
+        height: 34px;
+      }
+
+      .topbar {
+        height: calc(52px + env(safe-area-inset-top, 0px));
+        padding: env(safe-area-inset-top, 0px) 12px 0;
+        gap: 8px;
+      }
+
+      #crumb-name {
+        font-size: 15px;
+      }
+
+      .hero-meta {
+        display: none !important;
+      }
+
+      .page-scroll {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .page-container,
+      body.peek-open .page-container {
+        padding: 16px 14px calc(88px + env(safe-area-inset-bottom, 0px));
+      }
+
+      /* 2-Row Mobile Composer Card — 16px input prevents iOS Safari zoom */
+      .pill-composer {
+        flex-wrap: wrap;
+        border-radius: 18px;
+        padding: 11px 11px 10px 14px;
+        gap: 8px 6px;
+        margin-bottom: 16px;
+      }
+
+      .pill-composer input {
+        flex: 1 1 100%;
+        width: 100%;
+        font-size: 16px;
+        line-height: 1.4;
+        padding: 2px 2px 4px 0;
+      }
+
+      .pill-trigger {
+        padding: 6px 10px;
+        font-size: 12.5px;
+      }
+
+      .send-circle-btn {
+        margin-left: auto;
+        width: 34px;
+        height: 34px;
+      }
+
+      /* Prevent iOS Safari auto-zoom on every text input / textarea */
+      .clean-input,
+      .search-wrap input,
+      .notion-textarea,
+      .note-composer textarea {
+        font-size: 16px !important;
+      }
+
+      .view-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .view-tabs {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .view-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 8px;
+        font-size: 12.5px;
+        gap: 4px;
+      }
+
+      .view-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .search-wrap.open {
+        flex: 1 1 100%;
+        order: 10;
+      }
+
+      .search-wrap.open input {
+        width: 100% !important;
+      }
+
+      .label-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        margin-bottom: 12px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .label-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .label-filter-wrap,
+      .label-add-pill {
+        flex-shrink: 0;
+      }
+
+      /* Mobile Ticket Cards */
+      .db-table-wrap {
+        overflow-x: visible;
+        border-radius: 16px;
+      }
+
+      .db-grid {
+        display: flex !important;
+        flex-direction: column;
+      }
+
+      .db-head-cell {
+        display: none !important;
+      }
+
+      .db-row {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 6px;
+        padding: 13px 14px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: background 0.12s;
+      }
+
+      .db-row:last-child {
+        border-bottom: none;
+      }
+
+      .db-row:active,
+      .db-row.selected {
+        background: color-mix(in srgb, var(--blue) 8%, var(--bg-elevated));
+      }
+
+      .db-row.checked {
+        background: color-mix(in srgb, var(--blue) 12%, var(--bg-elevated));
+      }
+
+      .db-row > .db-cell {
+        display: inline-flex !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+      }
+
+      .db-row > .db-cell.name-cell {
+        flex: 1 1 100%;
+        width: 100%;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .name-left {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px 6px;
+      }
+
+      .row-dot {
+        width: 20px;
+        height: 20px;
+        transform: scale(0.55);
+      }
+
+      .ticket-name {
+        flex: 1 1 calc(100% - 28px);
+        font-size: 15px;
+        line-height: 1.4;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .db-row > .db-cell:nth-child(2) {
+        padding-left: 24px !important;
+      }
+
+      .db-row > .db-cell:nth-child(5) {
+        display: none !important;
+      }
+
+      .db-row > .db-cell:nth-child(6) {
+        display: inline-flex !important;
+        margin-left: auto;
+        font-size: 11.5px;
+        color: var(--ink-faint);
+      }
+
+      .time-full { display: none; }
+      .time-rel { display: inline; }
+
+      /* Full-Screen Slide-In Detail Sheet on iPhone */
+      .peek-drawer {
+        position: fixed;
+        inset: 0;
+        width: 100vw !important;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 95;
+        border-left: none !important;
+        box-shadow: none;
+        opacity: 1;
+        transform: translateX(100%);
+        pointer-events: none;
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .peek-drawer.open {
+        width: 100vw !important;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .peek-drawer .peek-topbar,
+      .peek-drawer .peek-scroll {
+        width: 100% !important;
+        min-width: 0 !important;
+        transform: none !important;
+      }
+
+      .peek-topbar {
+        height: calc(52px + env(safe-area-inset-top, 0px));
+        padding: env(safe-area-inset-top, 0px) 14px 0;
+      }
+
+      #detail-close-btn {
+        width: auto;
+        height: 32px;
+        padding: 0 10px 0 8px;
+        gap: 5px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        background: var(--bg-subtle);
+        color: var(--ink-strong);
+      }
+
+      #detail-close-btn svg {
+        transform: rotate(180deg);
+      }
+
+      .mobile-back-label {
+        display: inline;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .peek-scroll {
+        padding: 20px 18px calc(36px + env(safe-area-inset-bottom, 0px));
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .peek-title {
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+
+      .prop-label {
+        width: 102px;
+      }
+
+      .popover {
+        max-width: calc(100vw - 24px);
+        max-height: min(68dvh, 420px);
+        overflow-y: auto;
+      }
+
+      .toast {
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        max-width: calc(100vw - 32px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 1. Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-top">
+      <div class="workspace-brand">
+        <span class="workspace-avatar">S</span>
+        <span>smallyellow</span>
+      </div>
+      <button class="icon-btn" type="button" id="close-sidebar-btn" title="收合側邊欄">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2.5" width="12" height="11" rx="2"/>
+          <path d="M6 2.5v11"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="nav-section-header">
+      <span class="nav-section-label">生活分類</span>
+    </div>
+    <div class="project-list" id="project-list"></div>
+
+    <div class="sidebar-footer">
+      <div class="new-project-box" id="new-project-form">
+        <input class="clean-input" type="text" id="new-project-name" placeholder="專案名稱（如：理財、閱讀）" />
+        <input class="clean-input" type="text" id="new-project-desc" placeholder="簡短說明（選填）" />
+        <div style="display:flex; gap:6px; justify-content:flex-end;">
+          <button class="btn-subtle" type="button" id="cancel-project-btn">取消</button>
+          <button class="btn-blue" type="button" id="create-project-btn">建立</button>
+        </div>
+      </div>
+
+      <button class="nav-item" type="button" id="toggle-new-project-btn">
+        <span class="nav-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M8 3.5v9M3.5 8h9"/>
+          </svg>
+        </span>
+        <span class="nav-label">新增專案</span>
+      </button>
+      <button class="nav-item" type="button" id="theme-btn">
+        <span class="nav-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="5.5"/>
+            <path d="M8 2.5a5.5 5.5 0 0 0 0 11z" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="nav-label">切換深色 / 淺色</span>
+      </button>
+      <button class="nav-item" type="button" id="api-key-btn">
+        <span class="nav-icon">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="5.5" cy="8.5" r="3"/>
+            <path d="M8.2 7.2L13.5 3.5M11.5 5l1.6 1.5"/>
+          </svg>
+        </span>
+        <span class="nav-label">Linear 金鑰設定</span>
+      </button>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 2. Main Document Workspace -->
+  <div class="workspace">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn" type="button" id="open-sidebar-btn" title="展開側邊欄" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2.5" width="12" height="11" rx="2"/>
+            <path d="M6 2.5v11"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <span id="crumb-icon"></span>
+          <span id="crumb-name">載入中...</span>
+          <button class="hero-active-label" type="button" id="hero-label-badge" style="display:none;" title="點擊返回全部標籤"></button>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="hero-meta" id="hero-meta"></div>
+        <span class="sync-text" id="sync-status">同步中...</span>
+        <button class="icon-btn" type="button" id="refresh-btn" title="重新整理同步">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13.5 8a5.5 5.5 0 1 1-1.35-3.6M13.5 2.5v2.75h-2.75"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="page-scroll">
+      <div class="page-container">
+        <!-- ChatGPT-Style Pill Composer -->
+        <form class="pill-composer" id="quick-add-form">
+          <button class="pill-trigger" type="button" id="quick-proj-btn" style="display:none;"></button>
+          <input
+            type="text"
+            id="new-task-input"
+            placeholder="今天想記錄或安排什麼？輸入標題按 Enter 直接同步..."
+            autocomplete="off"
+          />
+          <button class="pill-trigger" type="button" id="quick-type-btn"></button>
+          <button class="pill-trigger" type="button" id="quick-label-btn">
+            <span id="quick-label-text">標籤</span>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <button class="pill-trigger" type="button" id="quick-prio-btn">
+            <span id="quick-prio-label">無優先級</span>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <button class="send-circle-btn" type="submit" title="建立項目">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 12.5V3.5M4 7.5l4-4 4 4"/>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Notion View Tabs & Actions -->
+        <div class="view-bar">
+          <div class="view-tabs" id="filter-tabs">
+            <button class="view-tab" type="button" data-filter="all">全部 <span class="view-tab-count" data-count="all">0</span></button>
+            <button class="view-tab" type="button" data-filter="active">未完成 <span class="view-tab-count" data-count="active">0</span></button>
+            <button class="view-tab" type="button" data-filter="open">Open <span class="view-tab-count" data-count="open">0</span></button>
+            <button class="view-tab" type="button" data-filter="progress">進行中 <span class="view-tab-count" data-count="progress">0</span></button>
+            <button class="view-tab" type="button" data-filter="closed">Closed <span class="view-tab-count" data-count="closed">0</span></button>
+          </div>
+
+          <div class="view-actions">
+            <button class="batch-del-btn" type="button" id="batch-delete-btn" style="display:none;"></button>
+            <button class="toolbar-btn" type="button" id="select-all-btn" style="display:none;">全選</button>
+            <button class="toolbar-btn" type="button" id="select-mode-btn">多選</button>
+            <div class="search-wrap" id="search-wrap">
+              <button class="icon-btn" type="button" id="search-toggle-btn" title="搜尋標題與筆記" style="width:24px;height:24px;">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <circle cx="7" cy="7" r="4.5"/>
+                  <path d="M10.5 10.5L14 14"/>
+                </svg>
+              </button>
+              <input type="search" id="search-input" placeholder="搜尋項目或筆記..." />
+            </div>
+
+            <button class="toolbar-btn" type="button" id="type-filter-btn">
+              <span id="type-filter-label">類型</span>
+            </button>
+
+            <button class="toolbar-btn" type="button" id="sort-menu-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M5 3v10M5 13l-2.5-2.5M5 13l2.5-2.5M11 13V3M11 3L8.5 5.5M11 3l2.5 5.5"/>
+              </svg>
+              <span id="sort-menu-label">排序</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Project Sub-Label Filter Bar -->
+        <div class="label-bar" id="label-bar"></div>
+
+        <!-- Ticket List Card -->
+        <div class="db-table-wrap">
+          <div class="db-grid" id="db-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Push-Left Side-Peek Drawer -->
+  <aside class="peek-drawer" id="detail-pane">
+    <div class="peek-topbar">
+      <div class="peek-topbar-left">
+        <button class="icon-btn" type="button" id="detail-close-btn" title="收起預覽 (Esc)">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h7M7.5 5l3 3-3 3M13 3.5v9"/>
+          </svg>
+          <span class="mobile-back-label">返回列表</span>
+        </button>
+      </div>
+      <div class="peek-topbar-right">
+        <button class="mini-btn danger" type="button" id="detail-delete-btn">刪除這筆資料</button>
+      </div>
+    </div>
+
+    <div class="peek-scroll">
+      <input class="peek-title" type="text" id="detail-title-input" />
+
+      <div class="props-list" id="detail-props"></div>
+
+      <div class="page-block">
+        <div class="block-header">
+          <span class="block-title">置頂說明</span>
+          <button class="btn-subtle" type="button" id="save-desc-btn" style="display:none;">儲存說明</button>
+        </div>
+        <textarea
+          class="notion-textarea"
+          id="detail-desc-input"
+          rows="3"
+          placeholder="點擊這裡補充背景說明、目標或參考連結..."
+        ></textarea>
+      </div>
+
+      <div>
+        <div class="thread-header">
+          <span class="block-title" id="thread-title">討論串筆記 (0)</span>
+          <button class="mini-btn" type="button" id="thread-sort-btn">時間：舊到新</button>
+        </div>
+
+        <div class="comment-stream" id="comment-list"></div>
+
+        <div class="note-composer">
+          <textarea
+            id="new-comment-input"
+            rows="3"
+            placeholder="在討論串記下新筆記... (Cmd / Ctrl + Enter 送出)"
+          ></textarea>
+          <div class="note-composer-bar">
+            <span>送出後自動更新 Modified 時間</span>
+            <button class="btn-blue" type="button" id="add-comment-btn">新增筆記</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Reusable Floating Popover -->
+  <div class="popover" id="popover"></div>
+
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <div class="confirm-title" id="confirm-title">確定要刪除嗎？</div>
+      <div class="confirm-desc" id="confirm-desc">此動作將無法復原。</div>
+      <div class="confirm-actions">
+        <button class="btn-pill-cancel" type="button" id="confirm-cancel-btn">取消</button>
+        <button class="btn-pill-danger" type="button" id="confirm-ok-btn">刪除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-overlay" id="auth-overlay">
+    <form class="auth-dialog" id="auth-form" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <div class="auth-badge">Linear 即時同步設定</div>
+      <div class="confirm-title" id="auth-title">連結你的 Linear 工作區</div>
+      <div class="confirm-desc">
+        請貼上你的 Linear Personal API Key（<code>lin_api_...</code>）。金鑰只會安全儲存在這台裝置的本機空間，不會公開上傳。
+      </div>
+      <div class="auth-input-row">
+        <input
+          class="auth-key-input"
+          type="password"
+          id="auth-key-input"
+          placeholder="lin_api_..."
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+        <button class="auth-paste-btn" type="button" id="auth-paste-btn">貼上</button>
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="confirm-actions">
+        <button class="btn-pill-cancel" type="button" id="auth-cancel-btn" style="display:none;">取消</button>
+        <button class="btn-pill-primary" type="submit" id="auth-save-btn">連結並同步</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_URL = "https://api.linear.app/graphql";
+    const DEFAULT_TEAM_ID = "aa6b0581-a442-4a75-ae2e-1f82103267cd";
+
+    // Support one-click URL hash key import (#key=lin_api_...) & immediately scrub URL
+    (function importKeyFromHash() {
+      const hash = window.location.hash || "";
+      const match = hash.match(/(?:^|[&#])key=([^&]+)/);
+      if (match && match[1]) {
+        const imported = decodeURIComponent(match[1]).trim();
+        if (imported) {
+          localStorage.setItem("linear_api_key", imported);
+        }
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    })();
+
+    function getApiKey() {
+      return (localStorage.getItem("linear_api_key") || "").trim();
+    }
+
+    function getTeamId() {
+      return (localStorage.getItem("linear_team_id") || DEFAULT_TEAM_ID).trim();
+    }
+    const ALL_PROJECTS_ID = "__ALL__";
+    const PROJECT_COLORS = ["#26B5CE", "#EB5757", "#BB87FC", "#F2C94C", "#4EA7FC", "#27AE60"];
+    const LABEL_COLORS = ["#26B5CE", "#EB5757", "#BB87FC", "#F2C94C", "#4EA7FC", "#27AE60", "#F2994A", "#EB5783"];
+
+    const PRIORITY_ITEMS = [
+      { value: 0, label: "無優先級", short: "無", cls: "prio-0" },
+      { value: 1, label: "P1 緊急", short: "P1 緊急", cls: "prio-1" },
+      { value: 2, label: "P2 高", short: "P2 高", cls: "prio-2" },
+      { value: 3, label: "P3 中", short: "P3 中", cls: "prio-3" },
+      { value: 4, label: "P4 低", short: "P4 低", cls: "prio-4" }
+    ];
+
+    const STATUS_ITEMS = [
+      { bucket: "open", label: "Open", cls: "status-open" },
+      { bucket: "progress", label: "進行中", cls: "status-progress" },
+      { bucket: "closed", label: "Closed", cls: "status-closed" }
+    ];
+
+    const TYPE_ITEMS = [
+      {
+        value: "task",
+        label: "Task",
+        desc: "做完就結束",
+        color: "#27AE60",
+        order: 1,
+        svg: '<circle cx="8" cy="8" r="5.8"/><path d="M5.5 8.2l1.8 1.8 3.4-3.7"/>'
+      },
+      {
+        value: "project",
+        label: "Project",
+        desc: "需要多個 Task 才能完成",
+        color: "#2383e2",
+        order: 2,
+        svg: '<path d="M2.2 4.8a1.2 1.2 0 0 1 1.2-1.2h2.8l1.3 1.4h5.1a1.2 1.2 0 0 1 1.2 1.2v5.6a1.2 1.2 0 0 1-1.2 1.2H3.4a1.2 1.2 0 0 1-1.2-1.2V4.8z"/>'
+      },
+      {
+        value: "habit",
+        label: "Habit",
+        desc: "需要定期重複",
+        color: "#BB87FC",
+        order: 3,
+        svg: '<path d="M3 6.5A4.8 4.8 0 0 1 12.2 5M13 3v2.5h-2.5M13 9.5A4.8 4.8 0 0 1 3.8 11M3 13v-2.5h2.5"/>'
+      },
+      {
+        value: "issue",
+        label: "Issue",
+        desc: "需要持續處理的問題",
+        color: "#EB5757",
+        order: 4,
+        svg: '<circle cx="8" cy="8" r="5.8"/><path d="M8 5.2v3.3"/><circle cx="8" cy="11" r="0.7" fill="currentColor" stroke="none"/>'
+      },
+      {
+        value: "goal",
+        label: "Goal",
+        desc: "想達成的結果",
+        color: "#8a8986",
+        order: 5,
+        svg: '<circle cx="8" cy="8" r="5.8"/><circle cx="8" cy="8" r="3.1"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>'
+      }
+    ];
+
+    const SORT_ITEMS = [
+      { value: "updated_desc", label: "Modified：新到舊" },
+      { value: "updated_asc", label: "Modified：舊到新" },
+      { value: "created_desc", label: "Opened：新到舊" },
+      { value: "created_asc", label: "Opened：舊到新" },
+      { value: "priority_desc", label: "Priority：高到低" },
+      { value: "priority_asc", label: "Priority：低到高" },
+      { value: "type_asc", label: "Type：Task → Goal" },
+      { value: "type_desc", label: "Type：Goal → Task" }
+    ];
+
+    function readJsonStorage(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    const state = {
+      viewerId: null,
+      viewerName: "Y",
+      projects: [],
+      issues: [],
+      labels: [],
+      typeLabelsByKey: {},
+      workflowStates: {},
+      selectedProjectId: localStorage.getItem("selected_project_id") || null,
+      expandedProjectIds: new Set(readJsonStorage("expanded_project_ids", [])),
+      draggedProjectId: null,
+      quickAddProjectId: null,
+      quickAddType: "task",
+      quickAddPriority: 0,
+      quickAddLabelIds: [],
+      selectedIssueId: null,
+      statusFilter: localStorage.getItem("status_filter") || "all",
+      typeFilter: "all",
+      labelFilter: null,
+      sortBy: localStorage.getItem("sort_by") || "updated_desc",
+      searchQuery: "",
+      commentSortAsc: true,
+      editingCommentId: null,
+      descDirty: false,
+      selectMode: false,
+      checkedIssueIds: new Set()
+    };
+
+    function saveExpandedProjects() {
+      localStorage.setItem("expanded_project_ids", JSON.stringify([...state.expandedProjectIds]));
+    }
+
+    function sortProjectsBySavedOrder(projects) {
+      const savedOrder = readJsonStorage("project_order", []);
+      const orderMap = new Map(savedOrder.map((id, idx) => [id, idx]));
+      return [...projects].sort((a, b) => {
+        const ia = orderMap.has(a.id) ? orderMap.get(a.id) : Number.MAX_SAFE_INTEGER;
+        const ib = orderMap.has(b.id) ? orderMap.get(b.id) : Number.MAX_SAFE_INTEGER;
+        if (ia !== ib) return ia - ib;
+        return (b.sortOrder || 0) - (a.sortOrder || 0);
+      });
+    }
+
+    function getProjectVisual(projectOrName) {
+      const name = typeof projectOrName === "string" ? projectOrName : (projectOrName?.name || "");
+      const projObj = (typeof projectOrName === "object" && projectOrName?.color)
+        ? projectOrName
+        : state.projects.find(p => (projectOrName?.id && p.id === projectOrName.id) || p.name === name);
+      if (!name || name === "所有專案") {
+        return {
+          color: "#8a8986",
+          svg: '<rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="9" width="4.5" height="4.5" rx="1.2"/>'
+        };
+      }
+      if (name.includes("身體")) {
+        return {
+          color: projObj?.color || "#26B5CE",
+          svg: '<path d="M8 2.3C8 2.3 3.8 7 3.8 10a4.2 4.2 0 1 0 8.4 0C12.2 7 8 2.3 8 2.3z"/>'
+        };
+      }
+      if (name.includes("運動") || name.includes("體能")) {
+        return {
+          color: projObj?.color || "#EB5757",
+          svg: '<path d="M2 8.5h2.5l1.8-4.5 3.2 8 1.8-3.5H14"/>'
+        };
+      }
+      if (name.includes("心理")) {
+        return {
+          color: projObj?.color || "#BB87FC",
+          svg: '<circle cx="8" cy="8" r="2.6"/><path d="M8 2.2v1.6M8 12.2v1.6M2.2 8h1.6M12.2 8h1.6M3.9 3.9l1.1 1.1M11 11l1.1 1.1M12.1 3.9L11 5M5 11l-1.1 1.1"/>'
+        };
+      }
+      if (name.includes("自我") || name.includes("提升") || name.includes("學習")) {
+        return {
+          color: projObj?.color || "#F2C94C",
+          svg: '<path d="M8 2l1.6 4.4L14 8l-4.4 1.6L8 14l-1.6-4.4L2 8l4.4-1.6L8 2z"/>'
+        };
+      }
+      return {
+        color: projObj?.color || "#4EA7FC",
+        svg: '<path d="M2.5 4.8a1.2 1.2 0 0 1 1.2-1.2h3l1.3 1.4h4.3a1.2 1.2 0 0 1 1.2 1.2v5.8a1.2 1.2 0 0 1-1.2 1.2H3.7a1.2 1.2 0 0 1-1.2-1.2V4.8z"/>'
+      };
+    }
+
+    function makeProjectSvg(svgBody, size = 14) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${svgBody}</svg>`;
+    }
+
+    function createProjectDot(projectOrName) {
+      const dot = document.createElement("span");
+      dot.className = "proj-dot";
+      dot.style.background = getProjectVisual(projectOrName).color;
+      return dot;
+    }
+
+    function createProjectChipContent(projectOrName) {
+      const wrap = document.createElement("span");
+      wrap.style.cssText = "display:inline-flex; align-items:center; gap:6px;";
+      wrap.appendChild(createProjectDot(projectOrName));
+      const label = document.createElement("span");
+      label.textContent = typeof projectOrName === "string" ? projectOrName : (projectOrName?.name || "未指定");
+      wrap.appendChild(label);
+      return wrap;
+    }
+
+    function getLabelProjectId(label) {
+      const desc = (label?.description || "").trim();
+      return desc.startsWith("project:") ? desc.slice(8).trim() || null : null;
+    }
+
+    function getScopedLabels(projectId = state.selectedProjectId) {
+      if (!projectId || projectId === ALL_PROJECTS_ID) return state.labels;
+      return state.labels.filter(l => {
+        const scopedProjId = getLabelProjectId(l);
+        return !scopedProjId || scopedProjId === projectId;
+      });
+    }
+
+    function getIssueLabels(issue) {
+      return (issue?.labels?.nodes || [])
+        .map(l => state.labels.find(sl => sl.id === l.id))
+        .filter(Boolean);
+    }
+
+    function createLabelChip(label, interactive = false) {
+      const el = document.createElement(interactive ? "button" : "span");
+      if (interactive) el.type = "button";
+      el.className = "label-chip";
+      el.style.setProperty("--label-color", label.color || "#4EA7FC");
+      const dot = document.createElement("span");
+      dot.className = "label-chip-dot";
+      const txt = document.createElement("span");
+      txt.textContent = label.name;
+      el.append(dot, txt);
+      return el;
+    }
+
+    function getPriorityMeta(val) {
+      return PRIORITY_ITEMS.find(p => p.value === (val || 0)) || PRIORITY_ITEMS[0];
+    }
+
+    function getStatusMeta(bucket) {
+      return STATUS_ITEMS.find(s => s.bucket === bucket) || STATUS_ITEMS[0];
+    }
+
+    function getTypeMeta(typeKey) {
+      return TYPE_ITEMS.find(t => t.value === typeKey) || TYPE_ITEMS[0];
+    }
+
+    function getLabelTypeKey(label) {
+      const desc = (label?.description || "").trim();
+      if (!desc.startsWith("type:")) return null;
+      const key = desc.slice(5).trim();
+      return TYPE_ITEMS.some(t => t.value === key) ? key : null;
+    }
+
+    function getIssueType(issue) {
+      for (const lbl of (issue?.labels?.nodes || [])) {
+        const directKey = getLabelTypeKey(lbl);
+        if (directKey) return directKey;
+        const matched = Object.entries(state.typeLabelsByKey).find(([, tl]) => tl.id === lbl.id);
+        if (matched) return matched[0];
+      }
+      return "task";
+    }
+
+    function makeTypeSvg(svgBody, size = 13) {
+      return `<svg width="${size}" height="${size}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${svgBody}</svg>`;
+    }
+
+    function createTypePill(typeVal, withDesc = false, interactive = true) {
+      const meta = getTypeMeta(typeVal);
+      const pill = document.createElement(interactive ? "button" : "span");
+      if (interactive) pill.type = "button";
+      pill.className = `type-pill type-${meta.value}`;
+      pill.style.setProperty("--type-color", meta.color);
+      pill.innerHTML = makeTypeSvg(meta.svg, 13);
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = meta.label;
+      pill.appendChild(nameSpan);
+      if (withDesc) {
+        const descSpan = document.createElement("span");
+        descSpan.className = "popover-type-desc";
+        descSpan.textContent = meta.desc;
+        pill.appendChild(descSpan);
+      }
+      return pill;
+    }
+
+    async function gql(query, variables = {}, apiKeyOverride = null) {
+      const key = (apiKeyOverride || getApiKey()).trim();
+      if (!key) {
+        openAuthModal(false);
+        throw new Error("請先輸入 Linear 金鑰");
+      }
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": key
+        },
+        body: JSON.stringify({ query, variables })
+      });
+      let json = null;
+      try {
+        json = await res.json();
+      } catch {
+        throw new Error(`連線異常 (HTTP ${res.status})`);
+      }
+      if (res.status === 401 || res.status === 403) {
+        if (!apiKeyOverride) openAuthModal(Boolean(getApiKey()), "Linear 金鑰無效或已過期，請重新貼上金鑰。");
+        throw new Error("Linear 金鑰驗證失敗");
+      }
+      if (json.errors && json.errors.length) {
+        const msg = json.errors[0].message || "GraphQL 錯誤";
+        if (!apiKeyOverride && /authentication|unauthorized|token|api key/i.test(msg)) {
+          openAuthModal(Boolean(getApiKey()), "Linear 金鑰驗證失敗：" + msg);
+        }
+        throw new Error(msg);
+      }
+      return json.data;
+    }
+
+    /* ================= Linear API Key Binding Modal ================= */
+    const authOverlayEl = document.getElementById("auth-overlay");
+    const authFormEl = document.getElementById("auth-form");
+    const authKeyInputEl = document.getElementById("auth-key-input");
+    const authPasteBtnEl = document.getElementById("auth-paste-btn");
+    const authCancelBtnEl = document.getElementById("auth-cancel-btn");
+    const authSaveBtnEl = document.getElementById("auth-save-btn");
+    const authErrorEl = document.getElementById("auth-error");
+
+    function setAuthError(msg) {
+      authErrorEl.textContent = msg || "";
+      authErrorEl.classList.toggle("show", Boolean(msg));
+    }
+
+    function openAuthModal(canCancel = false, errorMsg = "") {
+      authKeyInputEl.value = getApiKey();
+      authCancelBtnEl.style.display = canCancel ? "inline-block" : "none";
+      setAuthError(errorMsg);
+      authOverlayEl.classList.add("open");
+      setTimeout(() => authKeyInputEl.focus(), 40);
+    }
+
+    function closeAuthModal() {
+      authOverlayEl.classList.remove("open");
+      setAuthError("");
+    }
+
+    authCancelBtnEl.addEventListener("click", () => {
+      if (getApiKey()) closeAuthModal();
+    });
+
+    authOverlayEl.addEventListener("click", e => {
+      if (e.target === authOverlayEl && getApiKey()) closeAuthModal();
+    });
+
+    authPasteBtnEl.addEventListener("click", async () => {
+      try {
+        const clip = await navigator.clipboard.readText();
+        if (clip && clip.trim()) {
+          authKeyInputEl.value = clip.trim();
+          setAuthError("");
+          showToast("已貼上剪貼簿內容");
+        } else {
+          authKeyInputEl.focus();
+          showToast("剪貼簿目前是空的，請長按輸入框貼上");
+        }
+      } catch {
+        authKeyInputEl.focus();
+        showToast("請長按輸入框選擇「貼上」");
+      }
+    });
+
+    authFormEl.addEventListener("submit", async e => {
+      e.preventDefault();
+      const candidate = authKeyInputEl.value.trim();
+      if (!candidate) {
+        setAuthError("請貼上 lin_api_ 開頭的 Linear API Key。");
+        return;
+      }
+      authSaveBtnEl.disabled = true;
+      authSaveBtnEl.textContent = "驗證連線中...";
+      setAuthError("");
+      try {
+        const check = await gql(`
+          query VerifyKey {
+            viewer { id name }
+            teams(first: 20) { nodes { id name } }
+          }
+        `, {}, candidate);
+        const teams = check?.teams?.nodes || [];
+        const matchedTeam = teams.find(t => t.id === DEFAULT_TEAM_ID) || teams[0];
+        if (!matchedTeam) {
+          throw new Error("此帳號下找不到任何 Linear Team");
+        }
+        localStorage.setItem("linear_api_key", candidate);
+        localStorage.setItem("linear_team_id", matchedTeam.id);
+        closeAuthModal();
+        showToast(`已連結 ${check.viewer.name || "Linear"}！`);
+        await loadData();
+      } catch (err) {
+        setAuthError("無法連線至 Linear：" + (err.message || "請確認金鑰是否完整"));
+      } finally {
+        authSaveBtnEl.disabled = false;
+        authSaveBtnEl.textContent = "連結並同步";
+      }
+    });
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => el.classList.remove("show"), 2000);
+    }
+
+    function setSyncStatus(text) {
+      document.getElementById("sync-status").textContent = text;
+    }
+
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
+    function formatDateTime(iso, withSeconds = false) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      const base = `${d.getFullYear()}/${pad2(d.getMonth() + 1)}/${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+      return withSeconds ? `${base}:${pad2(d.getSeconds())}` : base;
+    }
+
+    function formatRelative(iso) {
+      if (!iso) return "";
+      const diffSec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+      if (diffSec < 60) return "剛剛";
+      const mins = Math.floor(diffSec / 60);
+      if (mins < 60) return `${mins} 分鐘前`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs} 小時前`;
+      const days = Math.floor(hrs / 24);
+      if (days < 30) return `${days} 天前`;
+      return `${Math.floor(days / 30)} 個月前`;
+    }
+
+    function getBucket(issue) {
+      const type = issue?.state?.type;
+      if (type === "started") return "progress";
+      if (type === "completed") return "closed";
+      return "open";
+    }
+
+    function getStateForBucket(bucket) {
+      if (bucket === "progress") return state.workflowStates.started;
+      if (bucket === "closed") return state.workflowStates.completed;
+      return state.workflowStates.todo;
+    }
+
+    function appendFormattedText(container, text) {
+      const urlRegex = /(https?:\/\/[^\s<]+)/g;
+      let lastIdx = 0;
+      let match;
+      while ((match = urlRegex.exec(text)) !== null) {
+        if (match.index > lastIdx) {
+          container.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+        }
+        const a = document.createElement("a");
+        a.href = match[0];
+        a.textContent = match[0];
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        container.appendChild(a);
+        lastIdx = match.index + match[0].length;
+      }
+      if (lastIdx < text.length) {
+        container.appendChild(document.createTextNode(text.slice(lastIdx)));
+      }
+    }
+
+    /* ================= Custom Confirm Modal ================= */
+    const confirmOverlayEl = document.getElementById("confirm-overlay");
+    const confirmTitleEl = document.getElementById("confirm-title");
+    const confirmDescEl = document.getElementById("confirm-desc");
+    const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+    const confirmOkBtn = document.getElementById("confirm-ok-btn");
+    let pendingConfirmResolve = null;
+
+    function resolveConfirm(result) {
+      if (!pendingConfirmResolve) return;
+      const done = pendingConfirmResolve;
+      pendingConfirmResolve = null;
+      confirmOverlayEl.classList.remove("open");
+      done(result);
+    }
+
+    function askConfirm({ title, desc = "", confirmText = "刪除" }) {
+      if (pendingConfirmResolve) resolveConfirm(false);
+      confirmTitleEl.textContent = title;
+      confirmDescEl.textContent = desc;
+      confirmDescEl.style.display = desc ? "block" : "none";
+      confirmOkBtn.textContent = confirmText;
+      confirmOverlayEl.classList.add("open");
+      setTimeout(() => confirmOkBtn.focus(), 20);
+      return new Promise(resolve => {
+        pendingConfirmResolve = resolve;
+      });
+    }
+
+    confirmCancelBtn.addEventListener("click", () => resolveConfirm(false));
+    confirmOkBtn.addEventListener("click", () => resolveConfirm(true));
+    confirmOverlayEl.addEventListener("click", e => {
+      if (e.target === confirmOverlayEl) resolveConfirm(false);
+    });
+
+    function createRowIconBtn(extraClass, title, svgBody, onClick) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `hover-row-btn ${extraClass}`;
+      btn.title = title;
+      btn.setAttribute("aria-label", title);
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgBody}</svg>`;
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        onClick(e);
+      });
+      return btn;
+    }
+
+    function createTrashBtn(title, onClick) {
+      return createRowIconBtn(
+        "hover-del-btn",
+        title,
+        '<path d="M3 4.5h10M6.2 4.5V3.2c0-.4.3-.7.7-.7h2.2c.4 0 .7.3.7.7v1.3M4.3 4.5l.6 8.3c0 .6.5 1 1.1 1h4c.6 0 1.1-.4 1.1-1l.6-8.3"/>',
+        onClick
+      );
+    }
+
+    function createTagBtn(title, onClick) {
+      return createRowIconBtn(
+        "hover-tag-btn",
+        title,
+        '<path d="M2.5 8.5V3.5a1 1 0 0 1 1-1h5l5 5-5 5-6-4z"/><circle cx="5.5" cy="5.5" r="0.9" fill="currentColor" stroke="none"/>',
+        onClick
+      );
+    }
+
+    /* ================= Custom Popover Menu ================= */
+    const popoverEl = document.getElementById("popover");
+
+    function closePopover() {
+      popoverEl.classList.remove("open");
+      popoverEl.innerHTML = "";
+    }
+
+    function positionPopover(anchorEl) {
+      popoverEl.classList.add("open");
+      const rect = anchorEl.getBoundingClientRect();
+      const popRect = popoverEl.getBoundingClientRect();
+      let top = rect.bottom + 6;
+      let left = rect.left;
+      if (top + popRect.height > window.innerHeight - 12) {
+        top = Math.max(12, rect.top - popRect.height - 6);
+      }
+      if (left + popRect.width > window.innerWidth - 12) {
+        left = Math.max(12, window.innerWidth - popRect.width - 12);
+      }
+      popoverEl.style.top = `${top}px`;
+      popoverEl.style.left = `${left}px`;
+    }
+
+    function openPopover(anchorEl, title, items, onSelect) {
+      popoverEl.innerHTML = "";
+      if (title) {
+        const t = document.createElement("div");
+        t.className = "popover-title";
+        t.textContent = title;
+        popoverEl.appendChild(t);
+      }
+      for (const item of items) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "popover-option";
+        btn.appendChild(item.node());
+        if (item.active) {
+          const check = document.createElement("span");
+          check.textContent = "✓";
+          check.style.color = "var(--blue)";
+          btn.appendChild(check);
+        }
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          closePopover();
+          onSelect(item.value);
+        });
+        popoverEl.appendChild(btn);
+      }
+      positionPopover(anchorEl);
+    }
+
+    function openLabelPopover(anchorEl, { issue = null, quickAdd = false, createOnly = false, projectId = null } = {}) {
+      const targetProjId = projectId || issue?.project?.id || (
+        quickAdd && state.selectedProjectId === ALL_PROJECTS_ID ? state.quickAddProjectId : state.selectedProjectId
+      );
+      let selectedColor = LABEL_COLORS[getScopedLabels(targetProjId).length % LABEL_COLORS.length];
+
+      const renderBody = (focusInput = createOnly) => {
+        popoverEl.innerHTML = "";
+        const scopedLabels = getScopedLabels(targetProjId);
+
+        const title = document.createElement("div");
+        title.className = "popover-title";
+        title.textContent = createOnly ? "新增分類標籤" : "選擇分類標籤（可複選）";
+        popoverEl.appendChild(title);
+
+        if (!createOnly) {
+          if (scopedLabels.length === 0) {
+            const empty = document.createElement("div");
+            empty.style.cssText = "padding: 4px 8px; font-size: 12px; color: var(--ink-faint);";
+            empty.textContent = "此專案還沒有標籤，下方可直接新增。";
+            popoverEl.appendChild(empty);
+          } else {
+            const activeIds = new Set(
+              issue
+                ? getIssueLabels(issue).map(l => l.id)
+                : (quickAdd ? state.quickAddLabelIds : [])
+            );
+            for (const label of scopedLabels) {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "popover-option";
+              const left = document.createElement("span");
+              left.style.cssText = "display:inline-flex; align-items:center; gap:7px;";
+              const dot = document.createElement("span");
+              dot.className = "label-filter-dot";
+              dot.style.background = label.color || "#4EA7FC";
+              const nameSpan = document.createElement("span");
+              nameSpan.textContent = label.name;
+              left.append(dot, nameSpan);
+              btn.appendChild(left);
+
+              if (activeIds.has(label.id)) {
+                const check = document.createElement("span");
+                check.textContent = "✓";
+                check.style.color = "var(--blue)";
+                btn.appendChild(check);
+              }
+
+              btn.addEventListener("click", async e => {
+                e.stopPropagation();
+                if (issue) {
+                  await toggleIssueLabel(issue, label);
+                } else if (quickAdd) {
+                  if (state.quickAddLabelIds.includes(label.id)) {
+                    state.quickAddLabelIds = state.quickAddLabelIds.filter(id => id !== label.id);
+                  } else {
+                    state.quickAddLabelIds.push(label.id);
+                  }
+                  renderPageHeader();
+                }
+                renderBody(false);
+              });
+              popoverEl.appendChild(btn);
+            }
+          }
+
+          const div = document.createElement("div");
+          div.className = "popover-divider";
+          popoverEl.appendChild(div);
+        }
+
+        const form = document.createElement("form");
+        form.className = "popover-label-form";
+        form.addEventListener("click", e => e.stopPropagation());
+
+        const row = document.createElement("div");
+        row.className = "popover-inline-row";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "clean-input";
+        input.placeholder = "例如：牙齒相關、肌肉相關...";
+        input.style.flex = "1";
+        input.style.minWidth = "0";
+
+        const submitBtn = document.createElement("button");
+        submitBtn.type = "submit";
+        submitBtn.className = "btn-blue";
+        submitBtn.textContent = "新增";
+        row.append(input, submitBtn);
+
+        const swatches = document.createElement("div");
+        swatches.className = "popover-swatch-row";
+        const swatchButtons = [];
+        for (const color of LABEL_COLORS) {
+          const sw = document.createElement("button");
+          sw.type = "button";
+          sw.className = "popover-swatch" + (color === selectedColor ? " active" : "");
+          sw.style.background = color;
+          sw.title = color;
+          sw.addEventListener("click", e => {
+            e.stopPropagation();
+            selectedColor = color;
+            swatchButtons.forEach(b => b.classList.toggle("active", b === sw));
+          });
+          swatchButtons.push(sw);
+          swatches.appendChild(sw);
+        }
+
+        form.addEventListener("submit", async e => {
+          e.preventDefault();
+          e.stopPropagation();
+          const name = input.value.trim();
+          if (!name) return;
+          submitBtn.disabled = true;
+          try {
+            const created = await createLabel(name, selectedColor, targetProjId);
+            if (!created) return;
+            selectedColor = LABEL_COLORS[getScopedLabels(targetProjId).length % LABEL_COLORS.length];
+            if (createOnly) {
+              closePopover();
+              return;
+            }
+            if (issue) {
+              const alreadyOnIssue = (issue.labels?.nodes || []).some(l => l.id === created.id);
+              if (!alreadyOnIssue) await toggleIssueLabel(issue, created);
+            } else if (quickAdd) {
+              if (!state.quickAddLabelIds.includes(created.id)) {
+                state.quickAddLabelIds.push(created.id);
+              }
+              renderPageHeader();
+            }
+            renderBody(true);
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+
+        form.append(row, swatches);
+        popoverEl.appendChild(form);
+        positionPopover(anchorEl);
+        if (focusInput) setTimeout(() => input.focus(), 10);
+      };
+
+      renderBody(createOnly);
+    }
+
+    let pointerDownInProtected = false;
+    let clickWasInsideProtected = false;
+
+    document.addEventListener("pointerdown", e => {
+      const detailPane = document.getElementById("detail-pane");
+      pointerDownInProtected = Boolean(
+        detailPane.contains(e.target) ||
+        confirmOverlayEl.contains(e.target) ||
+        authOverlayEl.contains(e.target) ||
+        popoverEl.contains(e.target)
+      );
+    }, true);
+
+    document.addEventListener("click", e => {
+      const detailPane = document.getElementById("detail-pane");
+      clickWasInsideProtected = Boolean(
+        pointerDownInProtected ||
+        detailPane.contains(e.target) ||
+        confirmOverlayEl.contains(e.target) ||
+        authOverlayEl.contains(e.target) ||
+        popoverEl.contains(e.target) ||
+        e.target.closest(".db-row") ||
+        e.target.closest(".db-cell") ||
+        e.target.closest("#select-mode-btn") ||
+        e.target.closest("#select-all-btn") ||
+        e.target.closest("#batch-delete-btn")
+      );
+      pointerDownInProtected = false;
+    }, true);
+
+    document.addEventListener("click", e => {
+      if (popoverEl.classList.contains("open") && !popoverEl.contains(e.target)) {
+        closePopover();
+      }
+      if (state.selectedIssueId && !clickWasInsideProtected) {
+        flushDetailEdits();
+        state.selectedIssueId = null;
+        renderAll();
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      const searchWrapEl = document.getElementById("search-wrap");
+      const searchInputEl = document.getElementById("search-input");
+      if (authOverlayEl.classList.contains("open") && getApiKey()) {
+        closeAuthModal();
+      } else if (confirmOverlayEl.classList.contains("open")) {
+        resolveConfirm(false);
+      } else if (popoverEl.classList.contains("open")) {
+        closePopover();
+      } else if (document.body.classList.contains("mobile-nav-open")) {
+        closeMobileSidebar();
+      } else if (state.editingCommentId) {
+        state.editingCommentId = null;
+        renderDetailPane();
+      } else if (searchWrapEl.classList.contains("open") && document.activeElement === searchInputEl) {
+        searchWrapEl.classList.remove("open");
+        searchInputEl.value = "";
+        state.searchQuery = "";
+        renderAll();
+      } else if (state.selectMode || state.checkedIssueIds.size > 0) {
+        state.selectMode = false;
+        state.checkedIssueIds.clear();
+        renderDatabaseTable();
+      } else if (state.selectedIssueId) {
+        flushDetailEdits();
+        state.selectedIssueId = null;
+        renderAll();
+      }
+    });
+
+    function createStatusPill(bucket, interactive = true) {
+      const meta = getStatusMeta(bucket);
+      const pill = document.createElement(interactive ? "button" : "span");
+      if (interactive) pill.type = "button";
+      pill.className = `tag-pill ${meta.cls}`;
+      const dot = document.createElement("span");
+      dot.className = "status-dot";
+      const txt = document.createElement("span");
+      txt.textContent = meta.label;
+      pill.append(dot, txt);
+      return pill;
+    }
+
+    function createPriorityPill(prioVal, useShort = true, interactive = true) {
+      const meta = getPriorityMeta(prioVal);
+      const pill = document.createElement(interactive ? "button" : "span");
+      if (interactive) pill.type = "button";
+      pill.className = `tag-pill prio-pill ${meta.cls}`;
+      pill.textContent = useShort ? meta.short : meta.label;
+      return pill;
+    }
+
+    /* ================= Linear GraphQL Operations ================= */
+    let lastSyncAt = 0;
+
+    async function loadData() {
+      if (!getApiKey()) {
+        setSyncStatus("待連結金鑰");
+        document.getElementById("crumb-name").textContent = "生活管理";
+        openAuthModal(false);
+        return;
+      }
+      setSyncStatus("同步中...");
+      try {
+        const data = await gql(`
+          query LoadWorkspace($teamId: String!) {
+            viewer { id name }
+            projects(first: 50) {
+              nodes { id name color description sortOrder state trashed archivedAt createdAt updatedAt }
+            }
+            issueLabels(first: 150) {
+              nodes { id name color description isGroup archivedAt }
+            }
+            issues(first: 250) {
+              nodes {
+                id
+                title
+                description
+                priority
+                createdAt
+                updatedAt
+                completedAt
+                state { id name type }
+                project { id name }
+                labels {
+                  nodes { id name color description }
+                }
+                comments {
+                  nodes { id body createdAt updatedAt }
+                }
+              }
+            }
+            team(id: $teamId) {
+              states {
+                nodes { id name type position }
+              }
+            }
+          }
+        `, { teamId: getTeamId() });
+
+        state.viewerId = data.viewer.id;
+        state.viewerName = (data.viewer.name || "Y").trim().charAt(0).toUpperCase();
+        state.projects = sortProjectsBySavedOrder(
+          data.projects.nodes
+            .filter(p => !p.trashed && !p.archivedAt && p.state !== "canceled" && p.state !== "completed")
+        );
+
+        const projectNames = new Set(state.projects.map(p => p.name));
+        const allLabels = (data.issueLabels?.nodes || []).filter(l => !l.archivedAt && !l.isGroup);
+        const typeLabelsByKey = {};
+        for (const l of allLabels) {
+          const tKey = getLabelTypeKey(l);
+          if (tKey) typeLabelsByKey[tKey] = l;
+        }
+        state.typeLabelsByKey = typeLabelsByKey;
+        state.labels = allLabels.filter(
+          l => !getLabelTypeKey(l) && (!projectNames.has(l.name) || (l.description || "").startsWith("project:"))
+        );
+
+        state.issues = data.issues.nodes.filter(
+          i => i.state && i.state.type !== "canceled" && i.state.type !== "duplicate"
+        );
+
+        const activeIssueIds = new Set(state.issues.map(i => i.id));
+        state.checkedIssueIds = new Set([...state.checkedIssueIds].filter(id => activeIssueIds.has(id)));
+
+        const wf = {};
+        for (const s of data.team.states.nodes) {
+          if (s.type === "unstarted" && !wf.todo) wf.todo = s;
+          if (s.type === "started" && !wf.started) wf.started = s;
+          if (s.type === "completed" && !wf.completed) wf.completed = s;
+        }
+        state.workflowStates = wf;
+
+        const validProject =
+          state.selectedProjectId === ALL_PROJECTS_ID ||
+          state.projects.some(p => p.id === state.selectedProjectId);
+        if (!validProject) {
+          state.selectedProjectId = state.projects[0]?.id || ALL_PROJECTS_ID;
+        }
+        if (localStorage.getItem("expanded_project_ids") === null && state.selectedProjectId && state.selectedProjectId !== ALL_PROJECTS_ID) {
+          state.expandedProjectIds.add(state.selectedProjectId);
+          saveExpandedProjects();
+        }
+        if (!state.quickAddProjectId || !state.projects.some(p => p.id === state.quickAddProjectId)) {
+          state.quickAddProjectId = state.projects[0]?.id || null;
+        }
+
+        if (state.labelFilter && !getScopedLabels().some(l => l.id === state.labelFilter)) {
+          state.labelFilter = null;
+        }
+        state.quickAddLabelIds = state.quickAddLabelIds.filter(id => state.labels.some(l => l.id === id));
+
+        if (state.selectedIssueId && !state.issues.some(i => i.id === state.selectedIssueId)) {
+          state.selectedIssueId = null;
+        }
+
+        renderAll();
+        lastSyncAt = Date.now();
+        setSyncStatus("已同步");
+      } catch (err) {
+        setSyncStatus("離線");
+        showToast("載入失敗：" + err.message);
+      }
+    }
+
+    async function updateIssueBucket(issue, targetBucket) {
+      const targetState = getStateForBucket(targetBucket);
+      if (!targetState || issue.state.id === targetState.id) return;
+
+      const prevState = issue.state;
+      const prevUpdated = issue.updatedAt;
+      issue.state = targetState;
+      issue.updatedAt = new Date().toISOString();
+      renderAll();
+
+      try {
+        const res = await gql(`
+          mutation UpdateIssueState($id: String!, $stateId: String!) {
+            issueUpdate(id: $id, input: { stateId: $stateId }) {
+              success
+              issue { updatedAt completedAt state { id name type } }
+            }
+          }
+        `, { id: issue.id, stateId: targetState.id });
+
+        if (res.issueUpdate.issue) {
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          issue.completedAt = res.issueUpdate.issue.completedAt;
+          issue.state = res.issueUpdate.issue.state;
+          renderAll();
+        }
+        showToast("已更新狀態");
+      } catch (err) {
+        issue.state = prevState;
+        issue.updatedAt = prevUpdated;
+        renderAll();
+        showToast("更新狀態失敗：" + err.message);
+      }
+    }
+
+    async function updateIssuePriority(issue, newPriority) {
+      if ((issue.priority || 0) === newPriority) return;
+      const prevPriority = issue.priority || 0;
+      const prevUpdated = issue.updatedAt;
+      issue.priority = newPriority;
+      issue.updatedAt = new Date().toISOString();
+      renderAll();
+
+      try {
+        const res = await gql(`
+          mutation UpdateIssuePriority($id: String!, $priority: Int!) {
+            issueUpdate(id: $id, input: { priority: $priority }) {
+              success
+              issue { priority updatedAt }
+            }
+          }
+        `, { id: issue.id, priority: newPriority });
+
+        if (res.issueUpdate.issue) {
+          issue.priority = res.issueUpdate.issue.priority;
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          renderAll();
+        }
+        showToast("已更新優先級");
+      } catch (err) {
+        issue.priority = prevPriority;
+        issue.updatedAt = prevUpdated;
+        renderAll();
+        showToast("更新優先級失敗：" + err.message);
+      }
+    }
+
+    async function updateIssueFields(issue, input, successMsg) {
+      const prev = {
+        title: issue.title,
+        description: issue.description,
+        updatedAt: issue.updatedAt
+      };
+      if ("title" in input) issue.title = input.title;
+      if ("description" in input) {
+        issue.description = input.description;
+        if (state.selectedIssueId === issue.id) state.descDirty = false;
+      }
+      issue.updatedAt = new Date().toISOString();
+      try {
+        const res = await gql(`
+          mutation UpdateIssueFields($id: String!, $input: IssueUpdateInput!) {
+            issueUpdate(id: $id, input: $input) {
+              success
+              issue {
+                title
+                description
+                priority
+                updatedAt
+                project { id name }
+              }
+            }
+          }
+        `, { id: issue.id, input });
+
+        if (res.issueUpdate.issue) {
+          issue.title = res.issueUpdate.issue.title;
+          issue.description = res.issueUpdate.issue.description;
+          issue.priority = res.issueUpdate.issue.priority;
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          issue.project = res.issueUpdate.issue.project;
+          if (state.selectedIssueId === issue.id && "description" in input) {
+            state.descDirty = false;
+          }
+          renderAll();
+          if (successMsg) showToast(successMsg);
+        }
+      } catch (err) {
+        issue.title = prev.title;
+        issue.description = prev.description;
+        issue.updatedAt = prev.updatedAt;
+        if (state.selectedIssueId === issue.id && "description" in input) {
+          state.descDirty = true;
+        }
+        renderAll();
+        showToast("儲存失敗：" + err.message);
+      }
+    }
+
+    function flushDetailEdits() {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      if (!issue) return;
+      const nextTitle = document.getElementById("detail-title-input").value.trim();
+      const nextDesc = document.getElementById("detail-desc-input").value;
+      const input = {};
+      if (nextTitle && nextTitle !== issue.title) input.title = nextTitle;
+      if (state.descDirty && nextDesc !== (issue.description || "")) input.description = nextDesc;
+      state.descDirty = false;
+      if (Object.keys(input).length > 0) {
+        updateIssueFields(issue, input, "已自動儲存變更");
+      }
+    }
+
+    async function createLabel(name, color, projectId) {
+      const trimmed = name.trim();
+      if (!trimmed) return null;
+      const existing = state.labels.find(l => l.name.trim().toLowerCase() === trimmed.toLowerCase());
+      if (existing) {
+        showToast(`已有標籤「${existing.name}」`);
+        return existing;
+      }
+
+      const description = projectId && projectId !== ALL_PROJECTS_ID ? `project:${projectId}` : undefined;
+      try {
+        const res = await gql(`
+          mutation CreateIssueLabel($input: IssueLabelCreateInput!) {
+            issueLabelCreate(input: $input) {
+              success
+              issueLabel { id name color description isGroup archivedAt }
+            }
+          }
+        `, {
+          input: {
+            teamId: getTeamId(),
+            name: trimmed,
+            color,
+            ...(description ? { description } : {})
+          }
+        });
+
+        if (res.issueLabelCreate.success && res.issueLabelCreate.issueLabel) {
+          state.labels.push(res.issueLabelCreate.issueLabel);
+          if (projectId && projectId !== ALL_PROJECTS_ID) {
+            state.expandedProjectIds.add(projectId);
+            saveExpandedProjects();
+          }
+          renderAll();
+          showToast(`已建立標籤「${trimmed}」`);
+          return res.issueLabelCreate.issueLabel;
+        }
+        return null;
+      } catch (err) {
+        showToast("建立標籤失敗：" + err.message);
+        return null;
+      }
+    }
+
+    async function deleteLabel(label) {
+      const ok = await askConfirm({
+        title: `確定要刪除標籤「${label.name}」嗎？`,
+        desc: "此標籤將從 Linear 移除。"
+      });
+      if (!ok) return;
+
+      try {
+        const res = await gql(`
+          mutation DeleteIssueLabel($id: String!) {
+            issueLabelDelete(id: $id) { success }
+          }
+        `, { id: label.id });
+
+        if (res.issueLabelDelete.success) {
+          state.labels = state.labels.filter(l => l.id !== label.id);
+          state.issues.forEach(i => {
+            if (i.labels?.nodes) {
+              i.labels.nodes = i.labels.nodes.filter(l => l.id !== label.id);
+            }
+          });
+          if (state.labelFilter === label.id) state.labelFilter = null;
+          state.quickAddLabelIds = state.quickAddLabelIds.filter(id => id !== label.id);
+          renderAll();
+          showToast(`已刪除標籤「${label.name}」`);
+        }
+      } catch (err) {
+        showToast("刪除標籤失敗：" + err.message);
+      }
+    }
+
+    async function toggleIssueLabel(issue, label) {
+      const currentNodes = [...(issue.labels?.nodes || [])];
+      const prevUpdated = issue.updatedAt;
+      const visibleIds = new Set(getIssueLabels(issue).map(l => l.id));
+      const hiddenIds = currentNodes.map(l => l.id).filter(id => !state.labels.some(sl => sl.id === id));
+
+      if (visibleIds.has(label.id)) {
+        visibleIds.delete(label.id);
+      } else {
+        visibleIds.add(label.id);
+      }
+
+      const nextLabelIds = [...hiddenIds, ...visibleIds];
+      const nextNodes = [
+        ...currentNodes.filter(l => hiddenIds.includes(l.id)),
+        ...Array.from(visibleIds).map(id => state.labels.find(sl => sl.id === id)).filter(Boolean)
+      ];
+
+      issue.labels = { nodes: nextNodes };
+      issue.updatedAt = new Date().toISOString();
+      renderAll();
+
+      try {
+        const res = await gql(`
+          mutation UpdateIssueLabels($id: String!, $labelIds: [String!]!) {
+            issueUpdate(id: $id, input: { labelIds: $labelIds }) {
+              success
+              issue {
+                updatedAt
+                labels { nodes { id name color description } }
+              }
+            }
+          }
+        `, { id: issue.id, labelIds: nextLabelIds });
+
+        if (res.issueUpdate.issue) {
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          issue.labels = res.issueUpdate.issue.labels;
+          renderAll();
+        }
+      } catch (err) {
+        issue.labels = { nodes: currentNodes };
+        issue.updatedAt = prevUpdated;
+        renderAll();
+        showToast("更新標籤失敗：" + err.message);
+      }
+    }
+
+    async function ensureTypeLabelId(typeKey) {
+      if (state.typeLabelsByKey[typeKey]?.id) return state.typeLabelsByKey[typeKey].id;
+      const meta = getTypeMeta(typeKey);
+      try {
+        const res = await gql(`
+          mutation CreateTypeLabel($input: IssueLabelCreateInput!) {
+            issueLabelCreate(input: $input) {
+              success
+              issueLabel { id name color description isGroup archivedAt }
+            }
+          }
+        `, {
+          input: {
+            teamId: getTeamId(),
+            name: `Type: ${meta.label}`,
+            color: meta.color,
+            description: `type:${meta.value}`
+          }
+        });
+        if (res.issueLabelCreate.success && res.issueLabelCreate.issueLabel) {
+          state.typeLabelsByKey[meta.value] = res.issueLabelCreate.issueLabel;
+          return res.issueLabelCreate.issueLabel.id;
+        }
+      } catch (err) {
+        showToast("同步 Type 標籤失敗：" + err.message);
+      }
+      return null;
+    }
+
+    async function updateIssueType(issue, newTypeKey) {
+      if (getIssueType(issue) === newTypeKey) return;
+      const prevNodes = [...(issue.labels?.nodes || [])];
+      const prevUpdated = issue.updatedAt;
+      const typeIds = new Set(Object.values(state.typeLabelsByKey).map(l => l.id));
+      const nonTypeNodes = prevNodes.filter(l => !typeIds.has(l.id) && !getLabelTypeKey(l));
+
+      const targetTypeId = await ensureTypeLabelId(newTypeKey);
+      if (!targetTypeId) return;
+      const targetTypeObj = state.typeLabelsByKey[newTypeKey];
+
+      issue.labels = { nodes: [...nonTypeNodes, targetTypeObj] };
+      issue.updatedAt = new Date().toISOString();
+      renderAll();
+
+      const nextLabelIds = [...nonTypeNodes.map(l => l.id), targetTypeId];
+      try {
+        const res = await gql(`
+          mutation UpdateIssueType($id: String!, $labelIds: [String!]!) {
+            issueUpdate(id: $id, input: { labelIds: $labelIds }) {
+              success
+              issue {
+                updatedAt
+                labels { nodes { id name color description } }
+              }
+            }
+          }
+        `, { id: issue.id, labelIds: nextLabelIds });
+
+        if (res.issueUpdate.issue) {
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          issue.labels = res.issueUpdate.issue.labels;
+          renderAll();
+        }
+        showToast(`已設為 ${getTypeMeta(newTypeKey).label}`);
+      } catch (err) {
+        issue.labels = { nodes: prevNodes };
+        issue.updatedAt = prevUpdated;
+        renderAll();
+        showToast("更新 Type 失敗：" + err.message);
+      }
+    }
+
+    async function createIssue(title, priorityOverride = null) {
+      const trimmed = title.trim();
+      if (!trimmed || !state.workflowStates.todo) return;
+
+      const targetProjectId =
+        state.selectedProjectId === ALL_PROJECTS_ID
+          ? (state.quickAddProjectId || state.projects[0]?.id)
+          : state.selectedProjectId;
+      if (!targetProjectId) return;
+
+      const priority = priorityOverride !== null ? priorityOverride : state.quickAddPriority;
+      const labelIds = state.quickAddLabelIds.length
+        ? [...state.quickAddLabelIds]
+        : (state.labelFilter && getScopedLabels(targetProjectId).some(l => l.id === state.labelFilter)
+            ? [state.labelFilter]
+            : []);
+
+      const activeTypeKey = state.quickAddType || (state.typeFilter !== "all" ? state.typeFilter : "task");
+      const typeLabelId = await ensureTypeLabelId(activeTypeKey);
+      if (typeLabelId && !labelIds.includes(typeLabelId)) {
+        labelIds.push(typeLabelId);
+      }
+
+      try {
+        const res = await gql(`
+          mutation CreateIssue($input: IssueCreateInput!) {
+            issueCreate(input: $input) {
+              success
+              issue {
+                id
+                title
+                description
+                priority
+                createdAt
+                updatedAt
+                completedAt
+                state { id name type }
+                project { id name }
+                labels { nodes { id name color description } }
+                comments { nodes { id body createdAt updatedAt } }
+              }
+            }
+          }
+        `, {
+          input: {
+            teamId: getTeamId(),
+            projectId: targetProjectId,
+            title: trimmed,
+            priority,
+            ...(labelIds.length ? { labelIds } : {}),
+            stateId: state.workflowStates.todo.id,
+            assigneeId: state.viewerId
+          }
+        });
+
+        if (res.issueCreate.success && res.issueCreate.issue) {
+          state.issues.unshift(res.issueCreate.issue);
+          document.getElementById("new-task-input").value = "";
+          state.quickAddPriority = 0;
+          state.quickAddLabelIds = [];
+          state.quickAddType = state.typeFilter !== "all" ? state.typeFilter : "task";
+          renderAll();
+          showToast("已建立項目");
+        }
+      } catch (err) {
+        showToast("建立失敗：" + err.message);
+      }
+    }
+
+    async function runBatchDelete(ids, gqlQuery) {
+      const results = await Promise.allSettled(
+        ids.map(id => gql(gqlQuery, { id }))
+      );
+      const deletedIds = new Set();
+      let failedCount = 0;
+      results.forEach((res, idx) => {
+        const payload = res.status === "fulfilled" ? Object.values(res.value || {})[0] : null;
+        if (res.status === "fulfilled" && payload?.success !== false) {
+          deletedIds.add(ids[idx]);
+        } else {
+          failedCount++;
+        }
+      });
+      return { deletedIds, failedCount };
+    }
+
+    async function deleteIssue(issue) {
+      const ok = await askConfirm({
+        title: "確定要刪除這筆項目嗎？",
+        desc: `即將從 Linear 永久移除「${issue.title}」。`
+      });
+      if (!ok) return;
+      try {
+        const res = await gql(`
+          mutation DeleteIssue($id: String!) {
+            issueDelete(id: $id) { success }
+          }
+        `, { id: issue.id });
+
+        if (res.issueDelete.success) {
+          state.issues = state.issues.filter(i => i.id !== issue.id);
+          state.checkedIssueIds.delete(issue.id);
+          if (state.selectedIssueId === issue.id) state.selectedIssueId = null;
+          renderAll();
+          showToast("已刪除");
+        }
+      } catch (err) {
+        showToast("刪除失敗：" + err.message);
+      }
+    }
+
+    async function deleteCheckedIssues() {
+      const targetIds = getFilteredAndSortedIssues()
+        .map(i => i.id)
+        .filter(id => state.checkedIssueIds.has(id));
+      if (!targetIds.length) return;
+
+      const ok = await askConfirm({
+        title: `確定要刪除這 ${targetIds.length} 個項目嗎？`,
+        desc: "所選項目與其討論串筆記都將從 Linear 移除。",
+        confirmText: `刪除 ${targetIds.length} 筆`
+      });
+      if (!ok) return;
+
+      const btn = document.getElementById("batch-delete-btn");
+      btn.disabled = true;
+      setSyncStatus("刪除中...");
+      try {
+        const { deletedIds, failedCount } = await runBatchDelete(targetIds, `
+          mutation DeleteIssue($id: String!) {
+            issueDelete(id: $id) { success }
+          }
+        `);
+        state.issues = state.issues.filter(i => !deletedIds.has(i.id));
+        deletedIds.forEach(id => state.checkedIssueIds.delete(id));
+        if (state.checkedIssueIds.size === 0) state.selectMode = false;
+        if (deletedIds.has(state.selectedIssueId)) state.selectedIssueId = null;
+        renderAll();
+        lastSyncAt = Date.now();
+        setSyncStatus("已同步");
+        showToast(failedCount ? `已刪除 ${deletedIds.size} 筆，${failedCount} 筆失敗` : `已刪除 ${deletedIds.size} 個項目`);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function addComment(issue, body) {
+      const trimmed = body.trim();
+      if (!trimmed) return;
+      const btn = document.getElementById("add-comment-btn");
+      btn.disabled = true;
+      try {
+        const res = await gql(`
+          mutation CreateComment($input: CommentCreateInput!) {
+            commentCreate(input: $input) {
+              success
+              comment { id body createdAt updatedAt }
+            }
+          }
+        `, { input: { issueId: issue.id, body: trimmed } });
+
+        if (res.commentCreate.success && res.commentCreate.comment) {
+          if (!issue.comments) issue.comments = { nodes: [] };
+          issue.comments.nodes.push(res.commentCreate.comment);
+          issue.updatedAt = res.commentCreate.comment.createdAt;
+          document.getElementById("new-comment-input").value = "";
+          renderAll();
+          showToast("已新增筆記");
+        }
+      } catch (err) {
+        showToast("新增筆記失敗：" + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function updateComment(issue, comment, newBody) {
+      const trimmed = newBody.trim();
+      if (!trimmed) return;
+      try {
+        const res = await gql(`
+          mutation UpdateComment($id: String!, $input: CommentUpdateInput!) {
+            commentUpdate(id: $id, input: $input) {
+              success
+              comment { id body createdAt updatedAt }
+            }
+          }
+        `, { id: comment.id, input: { body: trimmed } });
+
+        if (res.commentUpdate.success && res.commentUpdate.comment) {
+          comment.body = res.commentUpdate.comment.body;
+          comment.updatedAt = res.commentUpdate.comment.updatedAt;
+          issue.updatedAt = res.commentUpdate.comment.updatedAt;
+          state.editingCommentId = null;
+          renderAll();
+          showToast("已更新筆記");
+        }
+      } catch (err) {
+        showToast("更新筆記失敗：" + err.message);
+      }
+    }
+
+    async function deleteComment(issue, comment) {
+      const ok = await askConfirm({
+        title: "確定要刪除這則筆記嗎？",
+        desc: comment.body ? `「${comment.body.slice(0, 60)}${comment.body.length > 60 ? "..." : ""}」` : "此動作無法復原。"
+      });
+      if (!ok) return;
+      try {
+        const res = await gql(`
+          mutation DeleteComment($id: String!) {
+            commentDelete(id: $id) { success }
+          }
+        `, { id: comment.id });
+
+        if (res.commentDelete.success) {
+          issue.comments.nodes = issue.comments.nodes.filter(c => c.id !== comment.id);
+          renderAll();
+          showToast("已刪除筆記");
+        }
+      } catch (err) {
+        showToast("刪除筆記失敗：" + err.message);
+      }
+    }
+
+    async function deleteProject(project) {
+      const ok = await askConfirm({
+        title: `確定要刪除「${project.name}」專案嗎？`,
+        desc: "此專案將從 Linear 移除。"
+      });
+      if (!ok) return;
+
+      setSyncStatus("刪除專案中...");
+      try {
+        const res = await gql(`
+          mutation DeleteProject($id: String!) {
+            projectDelete(id: $id) { success }
+          }
+        `, { id: project.id });
+
+        if (res.projectDelete.success) {
+          state.projects = state.projects.filter(p => p.id !== project.id);
+          state.issues.forEach(i => {
+            if (i.project?.id === project.id) i.project = null;
+          });
+          if (state.selectedProjectId === project.id) {
+            state.selectedProjectId = state.projects[0]?.id || ALL_PROJECTS_ID;
+            localStorage.setItem("selected_project_id", state.selectedProjectId);
+          }
+          if (state.quickAddProjectId === project.id) {
+            state.quickAddProjectId = state.projects[0]?.id || null;
+          }
+          if (state.labelFilter && !getScopedLabels().some(l => l.id === state.labelFilter)) {
+            state.labelFilter = null;
+          }
+          state.expandedProjectIds.delete(project.id);
+          saveExpandedProjects();
+          localStorage.setItem("project_order", JSON.stringify(state.projects.map(p => p.id)));
+          renderAll();
+          setSyncStatus("已同步");
+          showToast(`已刪除專案「${project.name}」`);
+        }
+      } catch (err) {
+        setSyncStatus("已同步");
+        showToast("刪除專案失敗：" + err.message);
+      }
+    }
+
+    async function reorderProjects(draggedId, targetId, insertAfter) {
+      const prevOrder = state.projects.map(p => p.id).join(",");
+      const fromIdx = state.projects.findIndex(p => p.id === draggedId);
+      if (fromIdx < 0) return;
+      const [moved] = state.projects.splice(fromIdx, 1);
+      let toIdx = state.projects.findIndex(p => p.id === targetId);
+      if (toIdx < 0) {
+        state.projects.splice(fromIdx, 0, moved);
+        return;
+      }
+      if (insertAfter) toIdx += 1;
+      state.projects.splice(toIdx, 0, moved);
+
+      const newOrder = state.projects.map(p => p.id);
+      if (prevOrder === newOrder.join(",")) return;
+
+      localStorage.setItem("project_order", JSON.stringify(newOrder));
+      state.projects.forEach((p, idx) => {
+        p.sortOrder = (state.projects.length - idx) * 100;
+      });
+      renderAll();
+      showToast("已調整分類順序");
+
+      setSyncStatus("同步排序中...");
+      try {
+        await Promise.allSettled(
+          state.projects.map(p =>
+            gql(`
+              mutation ReorderProject($id: String!, $sortOrder: Float!) {
+                projectUpdate(id: $id, input: { sortOrder: $sortOrder }) { success }
+              }
+            `, { id: p.id, sortOrder: p.sortOrder })
+          )
+        );
+        setSyncStatus("已同步");
+      } catch {
+        setSyncStatus("已同步");
+      }
+    }
+
+    async function createProject(name, desc) {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      const color = PROJECT_COLORS[state.projects.length % PROJECT_COLORS.length];
+      try {
+        const res = await gql(`
+          mutation CreateProject($input: ProjectCreateInput!) {
+            projectCreate(input: $input) {
+              success
+              project { id name color description sortOrder state createdAt updatedAt }
+            }
+          }
+        `, {
+          input: {
+            name: trimmed,
+            description: desc.trim() || undefined,
+            teamIds: [getTeamId()],
+            color
+          }
+        });
+
+        if (res.projectCreate.success && res.projectCreate.project) {
+          state.projects.push(res.projectCreate.project);
+          state.selectedProjectId = res.projectCreate.project.id;
+          state.expandedProjectIds.add(res.projectCreate.project.id);
+          saveExpandedProjects();
+          localStorage.setItem("project_order", JSON.stringify(state.projects.map(p => p.id)));
+          localStorage.setItem("selected_project_id", state.selectedProjectId);
+          document.getElementById("new-project-name").value = "";
+          document.getElementById("new-project-desc").value = "";
+          document.getElementById("new-project-form").classList.remove("open");
+          renderAll();
+          showToast(`已建立專案「${trimmed}」`);
+        }
+      } catch (err) {
+        showToast("建立專案失敗：" + err.message);
+      }
+    }
+
+    /* ================= Data Filtering & Sorting ================= */
+    function getScopedIssues(applyLabel = true) {
+      const q = state.searchQuery.trim().toLowerCase();
+      return state.issues.filter(issue => {
+        if (state.selectedProjectId !== ALL_PROJECTS_ID) {
+          if (!issue.project || issue.project.id !== state.selectedProjectId) return false;
+        }
+        if (state.typeFilter !== "all" && getIssueType(issue) !== state.typeFilter) return false;
+        if (q) {
+          const inTitle = (issue.title || "").toLowerCase().includes(q);
+          const inDesc = (issue.description || "").toLowerCase().includes(q);
+          const inNotes = (issue.comments?.nodes || []).some(c => (c.body || "").toLowerCase().includes(q));
+          const inLabels = getIssueLabels(issue).some(l => l.name.toLowerCase().includes(q));
+          const inType = getTypeMeta(getIssueType(issue)).label.toLowerCase().includes(q);
+          if (!inTitle && !inDesc && !inNotes && !inLabels && !inType) return false;
+        }
+        if (applyLabel && state.labelFilter) {
+          if (!getIssueLabels(issue).some(l => l.id === state.labelFilter)) return false;
+        }
+        return true;
+      });
+    }
+
+    function getFilteredAndSortedIssues() {
+      const scoped = getScopedIssues();
+      const list = scoped.filter(issue => {
+        const bucket = getBucket(issue);
+        if (state.statusFilter === "active" && bucket === "closed") return false;
+        if (state.statusFilter === "open" && bucket !== "open") return false;
+        if (state.statusFilter === "progress" && bucket !== "progress") return false;
+        if (state.statusFilter === "closed" && bucket !== "closed") return false;
+        return true;
+      });
+
+      list.sort((a, b) => {
+        const ca = new Date(a.createdAt).getTime();
+        const cb = new Date(b.createdAt).getTime();
+        const ua = new Date(a.updatedAt).getTime();
+        const ub = new Date(b.updatedAt).getTime();
+        if (state.sortBy === "priority_desc") {
+          const pa = (a.priority || 0) === 0 ? 99 : a.priority;
+          const pb = (b.priority || 0) === 0 ? 99 : b.priority;
+          return pa - pb || ub - ua;
+        }
+        if (state.sortBy === "priority_asc") {
+          const pa = (a.priority || 0) === 0 ? -1 : a.priority;
+          const pb = (b.priority || 0) === 0 ? -1 : b.priority;
+          return pb - pa || ub - ua;
+        }
+        if (state.sortBy === "type_asc") {
+          const ta = getTypeMeta(getIssueType(a)).order;
+          const tb = getTypeMeta(getIssueType(b)).order;
+          return ta - tb || ub - ua;
+        }
+        if (state.sortBy === "type_desc") {
+          const ta = getTypeMeta(getIssueType(a)).order;
+          const tb = getTypeMeta(getIssueType(b)).order;
+          return tb - ta || ub - ua;
+        }
+        if (state.sortBy === "updated_desc") return ub - ua;
+        if (state.sortBy === "updated_asc") return ua - ub;
+        if (state.sortBy === "created_desc") return cb - ca;
+        return ca - cb;
+      });
+      return list;
+    }
+
+    /* ================= Rendering ================= */
+    function renderSidebar() {
+      const listEl = document.getElementById("project-list");
+      listEl.innerHTML = "";
+
+      const clearDragMarks = () => {
+        listEl.querySelectorAll(".nav-project-group").forEach(el => {
+          el.classList.remove("dragging", "drag-over-top", "drag-over-bottom");
+        });
+      };
+
+      const totalOpen = state.issues.filter(i => getBucket(i) !== "closed").length;
+      const allVisual = getProjectVisual(null);
+      const allBtn = document.createElement("button");
+      allBtn.type = "button";
+      allBtn.className = "nav-item" + (state.selectedProjectId === ALL_PROJECTS_ID ? " active" : "");
+
+      const allSpacer = document.createElement("span");
+      allSpacer.className = "nav-chevron";
+      allSpacer.style.visibility = "hidden";
+      const allIcon = document.createElement("span");
+      allIcon.className = "nav-icon";
+      allIcon.style.setProperty("--icon-color", allVisual.color);
+      allIcon.innerHTML = makeProjectSvg(allVisual.svg, 14);
+      const allLabel = document.createElement("span");
+      allLabel.className = "nav-label";
+      allLabel.textContent = "所有專案";
+      const allCount = document.createElement("span");
+      allCount.className = "nav-count";
+      allCount.textContent = totalOpen > 0 ? String(totalOpen) : "";
+      if (!totalOpen) allCount.style.display = "none";
+
+      allBtn.append(allSpacer, allIcon, allLabel, allCount);
+      allBtn.addEventListener("click", () => {
+        state.selectedProjectId = ALL_PROJECTS_ID;
+        state.checkedIssueIds.clear();
+        state.selectMode = false;
+        state.labelFilter = null;
+        state.quickAddLabelIds = [];
+        localStorage.setItem("selected_project_id", ALL_PROJECTS_ID);
+        closeMobileSidebar();
+        renderAll();
+      });
+      listEl.appendChild(allBtn);
+
+      for (let pIdx = 0; pIdx < state.projects.length; pIdx++) {
+        const project = state.projects[pIdx];
+        const openCount = state.issues.filter(
+          i => i.project && i.project.id === project.id && getBucket(i) !== "closed"
+        ).length;
+        const visual = getProjectVisual(project);
+        const isCurrentProject = project.id === state.selectedProjectId;
+        const isExpanded = state.expandedProjectIds.has(project.id);
+        const hasActiveChildLabel = isCurrentProject && state.labelFilter !== null;
+
+        const group = document.createElement("div");
+        group.className = "nav-project-group";
+        group.dataset.projectId = project.id;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.draggable = true;
+        btn.className =
+          "nav-item has-del" +
+          (isCurrentProject && !hasActiveChildLabel ? " active" : (hasActiveChildLabel ? " parent-active" : ""));
+
+        const chevron = document.createElement("span");
+        chevron.className = "nav-chevron" + (isExpanded ? " expanded" : "");
+        chevron.title = isExpanded ? "收合標籤" : "展開標籤";
+        chevron.innerHTML = `<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>`;
+        chevron.addEventListener("click", e => {
+          e.stopPropagation();
+          if (state.expandedProjectIds.has(project.id)) {
+            state.expandedProjectIds.delete(project.id);
+          } else {
+            state.expandedProjectIds.add(project.id);
+          }
+          saveExpandedProjects();
+          renderSidebar();
+        });
+
+        const icon = document.createElement("span");
+        icon.className = "nav-icon";
+        icon.style.setProperty("--icon-color", visual.color);
+        icon.innerHTML = makeProjectSvg(visual.svg, 14);
+
+        const label = document.createElement("span");
+        label.className = "nav-label";
+        label.textContent = project.name;
+
+        const count = document.createElement("span");
+        count.className = "nav-count";
+        count.textContent = openCount > 0 ? String(openCount) : "";
+        if (!openCount) count.style.display = "none";
+
+        const moveWrap = document.createElement("span");
+        moveWrap.className = "mobile-move-btns";
+        if (pIdx > 0) {
+          const upBtn = document.createElement("span");
+          upBtn.className = "mobile-move-btn";
+          upBtn.title = "上移分類";
+          upBtn.textContent = "↑";
+          upBtn.addEventListener("click", e => {
+            e.stopPropagation();
+            reorderProjects(project.id, state.projects[pIdx - 1].id, false);
+          });
+          moveWrap.appendChild(upBtn);
+        }
+        if (pIdx < state.projects.length - 1) {
+          const downBtn = document.createElement("span");
+          downBtn.className = "mobile-move-btn";
+          downBtn.title = "下移分類";
+          downBtn.textContent = "↓";
+          downBtn.addEventListener("click", e => {
+            e.stopPropagation();
+            reorderProjects(project.id, state.projects[pIdx + 1].id, true);
+          });
+          moveWrap.appendChild(downBtn);
+        }
+
+        const delBtn = createTrashBtn(`刪除專案 ${project.name}`, () => deleteProject(project));
+
+        btn.append(chevron, icon, label, count, moveWrap, delBtn);
+        btn.addEventListener("click", () => {
+          const isSame = state.selectedProjectId === project.id;
+          state.selectedProjectId = project.id;
+          state.checkedIssueIds.clear();
+          state.selectMode = false;
+          state.quickAddLabelIds = [];
+          localStorage.setItem("selected_project_id", project.id);
+
+          if (isMobileViewport()) {
+            state.labelFilter = null;
+            state.expandedProjectIds.add(project.id);
+            saveExpandedProjects();
+            closeMobileSidebar();
+            renderAll();
+            return;
+          }
+
+          if (!isSame || state.labelFilter !== null) {
+            state.labelFilter = null;
+            state.expandedProjectIds.add(project.id);
+          } else if (state.expandedProjectIds.has(project.id)) {
+            state.expandedProjectIds.delete(project.id);
+          } else {
+            state.expandedProjectIds.add(project.id);
+          }
+          saveExpandedProjects();
+          renderAll();
+        });
+
+        btn.addEventListener("dragstart", e => {
+          state.draggedProjectId = project.id;
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", project.id);
+          requestAnimationFrame(() => group.classList.add("dragging"));
+        });
+
+        btn.addEventListener("dragend", () => {
+          state.draggedProjectId = null;
+          clearDragMarks();
+        });
+
+        group.addEventListener("dragover", e => {
+          if (!state.draggedProjectId || state.draggedProjectId === project.id) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          const rect = btn.getBoundingClientRect();
+          const insertAfter = e.clientY > rect.top + rect.height / 2;
+          listEl.querySelectorAll(".nav-project-group").forEach(el => {
+            if (el !== group) el.classList.remove("drag-over-top", "drag-over-bottom");
+          });
+          group.classList.toggle("drag-over-top", !insertAfter);
+          group.classList.toggle("drag-over-bottom", insertAfter);
+        });
+
+        group.addEventListener("dragleave", e => {
+          if (!e.relatedTarget || !group.contains(e.relatedTarget)) {
+            group.classList.remove("drag-over-top", "drag-over-bottom");
+          }
+        });
+
+        group.addEventListener("drop", e => {
+          e.preventDefault();
+          e.stopPropagation();
+          const draggedId = state.draggedProjectId;
+          state.draggedProjectId = null;
+          const rect = btn.getBoundingClientRect();
+          const insertAfter = e.clientY > rect.top + rect.height / 2;
+          clearDragMarks();
+          if (draggedId && draggedId !== project.id) {
+            reorderProjects(draggedId, project.id, insertAfter);
+          }
+        });
+
+        group.appendChild(btn);
+
+        if (isExpanded) {
+          const sublist = document.createElement("div");
+          sublist.className = "nav-sublist";
+          const scopedLabels = getScopedLabels(project.id);
+
+          for (const lbl of scopedLabels) {
+            const openLblCount = state.issues.filter(
+              i =>
+                i.project &&
+                i.project.id === project.id &&
+                getBucket(i) !== "closed" &&
+                (i.labels?.nodes || []).some(l => l.id === lbl.id)
+            ).length;
+
+            const subBtn = document.createElement("button");
+            subBtn.type = "button";
+            subBtn.className =
+              "nav-subitem has-del" + (isCurrentProject && state.labelFilter === lbl.id ? " active" : "");
+
+            const subDot = document.createElement("span");
+            subDot.className = "nav-subdot";
+            subDot.style.background = lbl.color || "#4EA7FC";
+
+            const subName = document.createElement("span");
+            subName.className = "nav-sublabel";
+            subName.textContent = lbl.name;
+
+            const subCount = document.createElement("span");
+            subCount.className = "nav-count";
+            subCount.textContent = openLblCount > 0 ? String(openLblCount) : "";
+            if (!openLblCount) subCount.style.display = "none";
+
+            const subDelBtn = createTrashBtn(`刪除標籤 ${lbl.name}`, () => deleteLabel(lbl));
+
+            subBtn.append(subDot, subName, subCount, subDelBtn);
+            subBtn.addEventListener("click", () => {
+              state.selectedProjectId = project.id;
+              state.labelFilter = lbl.id;
+              state.checkedIssueIds.clear();
+              state.selectMode = false;
+              state.quickAddLabelIds = [];
+              state.expandedProjectIds.add(project.id);
+              saveExpandedProjects();
+              localStorage.setItem("selected_project_id", project.id);
+              closeMobileSidebar();
+              renderAll();
+            });
+            sublist.appendChild(subBtn);
+          }
+
+          const subAddBtn = document.createElement("button");
+          subAddBtn.type = "button";
+          subAddBtn.className = "nav-subitem nav-subadd";
+          subAddBtn.innerHTML = `<span style="width:7px; text-align:center;">+</span><span>新增標籤</span>`;
+          subAddBtn.addEventListener("click", e => {
+            e.stopPropagation();
+            openLabelPopover(subAddBtn, { createOnly: true, projectId: project.id });
+          });
+          sublist.appendChild(subAddBtn);
+
+          group.appendChild(sublist);
+        }
+
+        listEl.appendChild(group);
+      }
+    }
+
+    function renderPageHeader() {
+      const crumbIcon = document.getElementById("crumb-icon");
+      const crumbName = document.getElementById("crumb-name");
+      const heroLabelBadge = document.getElementById("hero-label-badge");
+      const heroMeta = document.getElementById("hero-meta");
+      const quickProjBtn = document.getElementById("quick-proj-btn");
+
+      if (state.labelFilter && !getScopedLabels().some(l => l.id === state.labelFilter)) {
+        state.labelFilter = null;
+      }
+      const activeLabel = state.labelFilter ? state.labels.find(l => l.id === state.labelFilter) : null;
+
+      let accentColor = "#4EA7FC";
+      crumbIcon.innerHTML = "";
+      if (state.selectedProjectId === ALL_PROJECTS_ID) {
+        const visual = getProjectVisual(null);
+        accentColor = activeLabel?.color || visual.color;
+        crumbIcon.style.setProperty("--icon-color", accentColor);
+        crumbIcon.innerHTML = makeProjectSvg(visual.svg, 14);
+        crumbName.textContent = "所有專案";
+        const targetProj = state.projects.find(p => p.id === state.quickAddProjectId) || state.projects[0];
+        if (targetProj) {
+          quickProjBtn.style.display = "inline-flex";
+          quickProjBtn.innerHTML = "";
+          quickProjBtn.appendChild(createProjectDot(targetProj));
+          const pName = document.createElement("span");
+          pName.textContent = `${targetProj.name} ▾`;
+          quickProjBtn.appendChild(pName);
+        } else {
+          quickProjBtn.style.display = "none";
+        }
+      } else {
+        quickProjBtn.style.display = "none";
+        const proj = state.projects.find(p => p.id === state.selectedProjectId);
+        const visual = getProjectVisual(proj);
+        const baseName = proj ? proj.name : "尚未選擇專案";
+        accentColor = activeLabel?.color || visual.color;
+        crumbIcon.style.setProperty("--icon-color", accentColor);
+        crumbIcon.innerHTML = makeProjectSvg(visual.svg, 14);
+        crumbName.textContent = baseName;
+      }
+
+      if (activeLabel) {
+        heroLabelBadge.style.display = "inline-flex";
+        heroLabelBadge.style.setProperty("--label-color", activeLabel.color || "#4EA7FC");
+        heroLabelBadge.innerHTML = "";
+        const dot = document.createElement("span");
+        dot.className = "label-chip-dot";
+        const lblName = document.createElement("span");
+        lblName.textContent = activeLabel.name;
+        const closeX = document.createElement("span");
+        closeX.className = "hero-label-close";
+        closeX.textContent = "×";
+        heroLabelBadge.append(dot, lblName, closeX);
+      } else {
+        heroLabelBadge.style.display = "none";
+      }
+
+      const prioMeta = getPriorityMeta(state.quickAddPriority);
+      document.getElementById("quick-prio-label").textContent = prioMeta.label;
+
+      const quickTypeBtn = document.getElementById("quick-type-btn");
+      const qTypeMeta = getTypeMeta(state.quickAddType);
+      quickTypeBtn.innerHTML = `<span style="display:inline-flex; align-items:center; color:${qTypeMeta.color};">${makeTypeSvg(qTypeMeta.svg, 12)}</span><span>${qTypeMeta.label}</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>`;
+
+      const quickLabelBtn = document.getElementById("quick-label-btn");
+      quickLabelBtn.innerHTML = "";
+      const activeQuickLabels = state.quickAddLabelIds
+        .map(id => state.labels.find(l => l.id === id))
+        .filter(Boolean);
+      if (activeQuickLabels.length === 1) {
+        const dot = document.createElement("span");
+        dot.className = "label-chip-dot";
+        dot.style.background = activeQuickLabels[0].color || "#4EA7FC";
+        quickLabelBtn.appendChild(dot);
+      }
+      const qLblSpan = document.createElement("span");
+      qLblSpan.id = "quick-label-text";
+      qLblSpan.textContent = activeQuickLabels.length === 0
+        ? "標籤"
+        : (activeQuickLabels.length === 1 ? activeQuickLabels[0].name : `標籤 (${activeQuickLabels.length})`);
+      quickLabelBtn.appendChild(qLblSpan);
+      quickLabelBtn.insertAdjacentHTML(
+        "beforeend",
+        '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>'
+      );
+
+      const scoped = getScopedIssues(true);
+      const counts = { all: scoped.length, active: 0, open: 0, progress: 0, closed: 0 };
+      let latestUpdatedMs = 0;
+      let latestIso = null;
+      for (const issue of scoped) {
+        const b = getBucket(issue);
+        counts[b]++;
+        if (b !== "closed") counts.active++;
+        const ts = issue.updatedAt ? new Date(issue.updatedAt).getTime() : 0;
+        if (ts > latestUpdatedMs) {
+          latestUpdatedMs = ts;
+          latestIso = issue.updatedAt;
+        }
+      }
+
+      heroMeta.innerHTML = "";
+      const pill = document.createElement("span");
+      pill.className = "hero-stat-pill";
+      if (counts.all === 0) {
+        pill.textContent = "尚無項目";
+        heroMeta.appendChild(pill);
+      } else {
+        const pct = Math.round((counts.closed / counts.all) * 100);
+        const track = document.createElement("span");
+        track.className = "hero-progress-track";
+        const fill = document.createElement("span");
+        fill.className = "hero-progress-fill";
+        fill.style.width = `${pct}%`;
+        fill.style.setProperty("--accent-color", accentColor);
+        track.appendChild(fill);
+
+        const doneTxt = document.createElement("span");
+        doneTxt.textContent = `${counts.closed} / ${counts.all} 完成`;
+        pill.append(track, doneTxt);
+
+        if (counts.progress > 0) {
+          const sep1 = document.createElement("span");
+          sep1.className = "hero-meta-sep";
+          sep1.textContent = "·";
+          const progTxt = document.createElement("span");
+          progTxt.textContent = `${counts.progress} 進行中`;
+          pill.append(sep1, progTxt);
+        }
+
+        if (latestIso) {
+          const sep2 = document.createElement("span");
+          sep2.className = "hero-meta-sep";
+          sep2.textContent = "·";
+          const timeTxt = document.createElement("span");
+          timeTxt.textContent = `更新 ${formatRelative(latestIso)}`;
+          pill.append(sep2, timeTxt);
+        }
+        heroMeta.appendChild(pill);
+      }
+
+      document.querySelectorAll("#filter-tabs .view-tab-count").forEach(el => {
+        el.textContent = String(counts[el.dataset.count] || 0);
+      });
+      document.querySelectorAll("#filter-tabs .view-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.filter === state.statusFilter);
+      });
+
+      const typeFilterBtn = document.getElementById("type-filter-btn");
+      typeFilterBtn.classList.toggle("active", state.typeFilter !== "all");
+      typeFilterBtn.innerHTML = "";
+      if (state.typeFilter === "all") {
+        const lbl = document.createElement("span");
+        lbl.id = "type-filter-label";
+        lbl.textContent = "類型";
+        typeFilterBtn.appendChild(lbl);
+      } else {
+        const tfMeta = getTypeMeta(state.typeFilter);
+        const iconSpan = document.createElement("span");
+        iconSpan.style.cssText = `display:inline-flex; align-items:center; color:${tfMeta.color};`;
+        iconSpan.innerHTML = makeTypeSvg(tfMeta.svg, 13);
+        const lbl = document.createElement("span");
+        lbl.id = "type-filter-label";
+        lbl.textContent = tfMeta.label;
+        typeFilterBtn.append(iconSpan, lbl);
+      }
+
+      const currentSort = SORT_ITEMS.find(s => s.value === state.sortBy);
+      document.getElementById("sort-menu-label").textContent = currentSort ? currentSort.label : "排序";
+
+      renderLabelBar();
+    }
+
+    function renderLabelBar() {
+      const bar = document.getElementById("label-bar");
+      bar.innerHTML = "";
+
+      const baseIssues = getScopedIssues(false);
+      const scopedLabels = getScopedLabels();
+      if (state.labelFilter && !scopedLabels.some(l => l.id === state.labelFilter)) {
+        state.labelFilter = null;
+      }
+
+      const allWrap = document.createElement("span");
+      allWrap.className = "label-filter-wrap" + (!state.labelFilter ? " active" : "");
+      const allPill = document.createElement("button");
+      allPill.type = "button";
+      allPill.className = "label-filter-pill";
+      allPill.textContent = "全部標籤";
+      const allCnt = document.createElement("span");
+      allCnt.className = "label-filter-count";
+      allCnt.textContent = String(baseIssues.length);
+      allPill.appendChild(allCnt);
+      allPill.addEventListener("click", () => {
+        if (!state.labelFilter) return;
+        state.labelFilter = null;
+        renderAll();
+      });
+      allWrap.appendChild(allPill);
+      bar.appendChild(allWrap);
+
+      for (const label of scopedLabels) {
+        const cnt = baseIssues.filter(i => (i.labels?.nodes || []).some(l => l.id === label.id)).length;
+        const wrap = document.createElement("span");
+        wrap.className = "label-filter-wrap" + (state.labelFilter === label.id ? " active" : "");
+        wrap.style.setProperty("--label-color", label.color || "#4EA7FC");
+
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "label-filter-pill";
+        const dot = document.createElement("span");
+        dot.className = "label-filter-dot";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = label.name;
+        pill.append(dot, nameSpan);
+        if (cnt > 0) {
+          const cntSpan = document.createElement("span");
+          cntSpan.className = "label-filter-count";
+          cntSpan.textContent = String(cnt);
+          pill.appendChild(cntSpan);
+        }
+        pill.addEventListener("click", () => {
+          state.labelFilter = state.labelFilter === label.id ? null : label.id;
+          renderAll();
+        });
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "label-filter-del";
+        delBtn.title = `刪除標籤 ${label.name}`;
+        delBtn.setAttribute("aria-label", `刪除標籤 ${label.name}`);
+        delBtn.textContent = "×";
+        delBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          deleteLabel(label);
+        });
+
+        wrap.append(pill, delBtn);
+        bar.appendChild(wrap);
+      }
+
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "label-add-pill";
+      addBtn.id = "add-label-pill-btn";
+      addBtn.textContent = "+ 新增標籤";
+      addBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        openLabelPopover(addBtn, { createOnly: true });
+      });
+      bar.appendChild(addBtn);
+    }
+
+    function updateBatchDeleteButton(items) {
+      const delBtn = document.getElementById("batch-delete-btn");
+      const selectModeBtn = document.getElementById("select-mode-btn");
+      const selectAllBtn = document.getElementById("select-all-btn");
+      const grid = document.getElementById("db-grid");
+
+      const checkedCount = items.filter(i => state.checkedIssueIds.has(i.id)).length;
+      const allChecked = items.length > 0 && checkedCount === items.length;
+      const inSelectMode = state.selectMode || checkedCount > 0;
+
+      grid.classList.toggle("select-mode", inSelectMode);
+      selectModeBtn.textContent = state.selectMode ? "完成多選" : "多選";
+      selectModeBtn.classList.toggle("active", state.selectMode);
+
+      if (inSelectMode && items.length > 0) {
+        selectAllBtn.style.display = "inline-flex";
+        selectAllBtn.textContent = allChecked ? "取消全選" : "全選";
+      } else {
+        selectAllBtn.style.display = "none";
+      }
+
+      if (checkedCount > 0) {
+        delBtn.style.display = "inline-flex";
+        delBtn.textContent = `刪除已選 (${checkedCount})`;
+      } else {
+        delBtn.style.display = "none";
+      }
+    }
+
+    function makeTableHead(text, extraClass = "", sortAsc = null, sortDesc = null) {
+      const cell = document.createElement("div");
+      cell.className = "db-head-cell " + extraClass;
+      const span = document.createElement("span");
+      span.textContent = text;
+      cell.appendChild(span);
+
+      if (sortAsc && sortDesc) {
+        cell.classList.add("sortable");
+        if (state.sortBy === sortDesc) {
+          cell.classList.add("sorted");
+          span.textContent = `${text} ↓`;
+        } else if (state.sortBy === sortAsc) {
+          cell.classList.add("sorted");
+          span.textContent = `${text} ↑`;
+        }
+        cell.addEventListener("click", () => {
+          state.sortBy = state.sortBy === sortDesc ? sortAsc : sortDesc;
+          localStorage.setItem("sort_by", state.sortBy);
+          renderAll();
+        });
+      }
+      return cell;
+    }
+
+    function renderDatabaseTable() {
+      const grid = document.getElementById("db-grid");
+      grid.innerHTML = "";
+
+      const items = getFilteredAndSortedIssues();
+      updateBatchDeleteButton(items);
+
+      // Column headers
+      grid.appendChild(makeTableHead("項目"));
+      grid.appendChild(makeTableHead("Type", "", "type_asc", "type_desc"));
+      grid.appendChild(makeTableHead("Priority", "", "priority_asc", "priority_desc"));
+      grid.appendChild(makeTableHead("Status", ""));
+      grid.appendChild(makeTableHead("Opened", "align-right", "created_asc", "created_desc"));
+      grid.appendChild(makeTableHead("Modified", "align-right", "updated_asc", "updated_desc"));
+
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-db";
+        empty.style.gridColumn = "1 / -1";
+        empty.textContent = state.searchQuery
+          ? "沒有符合搜尋關鍵字的項目"
+          : (state.labelFilter || state.typeFilter !== "all"
+              ? "目前篩選條件下還沒有項目，直接在上方輸入即可新增。"
+              : "目前還沒有任何項目，直接在上方輸入欄輸入標題即可建立。");
+        grid.appendChild(empty);
+        return;
+      }
+
+      for (const issue of items) {
+        const bucket = getBucket(issue);
+        const isChecked = state.checkedIssueIds.has(issue.id);
+        const row = document.createElement("div");
+        row.className =
+          "db-row" +
+          (issue.id === state.selectedIssueId ? " selected" : "") +
+          (isChecked ? " checked" : "") +
+          (bucket === "closed" ? " is-closed" : "");
+
+        const toggleRowCheck = () => {
+          if (state.checkedIssueIds.has(issue.id)) {
+            state.checkedIssueIds.delete(issue.id);
+          } else {
+            state.checkedIssueIds.add(issue.id);
+          }
+          renderDatabaseTable();
+        };
+
+        const onRowClick = e => {
+          if (state.selectMode || e.metaKey || e.ctrlKey) {
+            toggleRowCheck();
+            return;
+          }
+          flushDetailEdits();
+          if (state.selectedIssueId === issue.id) {
+            state.selectedIssueId = null;
+          } else {
+            state.selectedIssueId = issue.id;
+            state.editingCommentId = null;
+            state.descDirty = false;
+          }
+          renderAll();
+        };
+
+        // Col 1: Morphing Status Dot + Name + Project Chip + Note Count + Hover Trash
+        const nameCell = document.createElement("div");
+        nameCell.className = "db-cell name-cell";
+        nameCell.addEventListener("click", onRowClick);
+
+        const nameLeft = document.createElement("div");
+        nameLeft.className = "name-left";
+
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = `row-dot ${bucket}`;
+        dot.title = "點選可多選";
+        dot.setAttribute("aria-label", `選取 ${issue.title}`);
+        dot.innerHTML = `<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-6.5"/></svg>`;
+        dot.addEventListener("click", e => {
+          e.stopPropagation();
+          toggleRowCheck();
+        });
+        nameLeft.appendChild(dot);
+
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "ticket-name";
+        titleSpan.textContent = issue.title;
+        nameLeft.appendChild(titleSpan);
+
+        if (state.selectedProjectId === ALL_PROJECTS_ID && issue.project) {
+          const pChip = document.createElement("span");
+          pChip.className = "proj-chip";
+          pChip.appendChild(createProjectChipContent(issue.project));
+          nameLeft.appendChild(pChip);
+        }
+
+        for (const label of getIssueLabels(issue)) {
+          const lChip = createLabelChip(label, true);
+          lChip.title = `編輯標籤：${label.name}`;
+          lChip.addEventListener("click", e => {
+            e.stopPropagation();
+            openLabelPopover(lChip, { issue });
+          });
+          nameLeft.appendChild(lChip);
+        }
+
+        const noteCount = issue.comments?.nodes?.length || 0;
+        if (noteCount > 0) {
+          const nChip = document.createElement("span");
+          nChip.className = "note-chip";
+          nChip.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3.5h11v7.5h-6l-3.2 2.4V11H2.5z"/></svg><span>${noteCount}</span>`;
+          nameLeft.appendChild(nChip);
+        }
+
+        const rowActions = document.createElement("div");
+        rowActions.className = "row-actions";
+        rowActions.appendChild(
+          createTagBtn("設定標籤", e => openLabelPopover(e.currentTarget, { issue }))
+        );
+        rowActions.appendChild(
+          createTrashBtn("刪除此項目", () => deleteIssue(issue))
+        );
+
+        nameCell.appendChild(nameLeft);
+        nameCell.appendChild(rowActions);
+
+        // Col 2: Type Pill
+        const issueType = getIssueType(issue);
+        const typeCell = document.createElement("div");
+        typeCell.className = "db-cell";
+        const typePill = createTypePill(issueType, false, true);
+        typePill.title = getTypeMeta(issueType).desc;
+        typePill.addEventListener("click", e => {
+          e.stopPropagation();
+          openPopover(
+            typePill,
+            "設定項目類型 (Type)",
+            TYPE_ITEMS.map(t => ({
+              value: t.value,
+              active: issueType === t.value,
+              node: () => createTypePill(t.value, true, false)
+            })),
+            val => updateIssueType(issue, val)
+          );
+        });
+        typeCell.addEventListener("click", onRowClick);
+        typeCell.appendChild(typePill);
+
+        // Col 3: Priority Pill
+        const prioCell = document.createElement("div");
+        prioCell.className = "db-cell";
+        const prioPill = createPriorityPill(issue.priority || 0, true, true);
+        prioPill.addEventListener("click", e => {
+          e.stopPropagation();
+          openPopover(
+            prioPill,
+            "設定優先級",
+            PRIORITY_ITEMS.map(p => ({
+              value: p.value,
+              active: (issue.priority || 0) === p.value,
+              node: () => createPriorityPill(p.value, false, false)
+            })),
+            val => updateIssuePriority(issue, val)
+          );
+        });
+        prioCell.addEventListener("click", onRowClick);
+        prioCell.appendChild(prioPill);
+
+        // Col 3: Status Pill
+        const statusCell = document.createElement("div");
+        statusCell.className = "db-cell";
+        const statusPill = createStatusPill(bucket, true);
+        statusPill.addEventListener("click", e => {
+          e.stopPropagation();
+          openPopover(
+            statusPill,
+            "切換狀態",
+            STATUS_ITEMS.map(s => ({
+              value: s.bucket,
+              active: bucket === s.bucket,
+              node: () => createStatusPill(s.bucket, false)
+            })),
+            val => updateIssueBucket(issue, val)
+          );
+        });
+        statusCell.addEventListener("click", onRowClick);
+        statusCell.appendChild(statusPill);
+
+        // Col 4: Opened
+        const openedCell = document.createElement("div");
+        openedCell.className = "db-cell time-cell";
+        openedCell.textContent = formatDateTime(issue.createdAt);
+        openedCell.title = `建立於 ${formatDateTime(issue.createdAt, true)} (${formatRelative(issue.createdAt)})`;
+        openedCell.addEventListener("click", onRowClick);
+
+        // Col 5: Modified
+        const modifiedCell = document.createElement("div");
+        modifiedCell.className = "db-cell time-cell";
+        const fullTimeSpan = document.createElement("span");
+        fullTimeSpan.className = "time-full";
+        fullTimeSpan.textContent = formatDateTime(issue.updatedAt);
+        const relTimeSpan = document.createElement("span");
+        relTimeSpan.className = "time-rel";
+        relTimeSpan.textContent = formatRelative(issue.updatedAt);
+        modifiedCell.append(fullTimeSpan, relTimeSpan);
+        modifiedCell.title = `最後修改 ${formatDateTime(issue.updatedAt, true)} (${formatRelative(issue.updatedAt)})`;
+        modifiedCell.addEventListener("click", onRowClick);
+
+        row.addEventListener("click", e => {
+          if (!e.target.closest(".db-cell")) onRowClick(e);
+        });
+
+        row.append(nameCell, typeCell, prioCell, statusCell, openedCell, modifiedCell);
+        grid.appendChild(row);
+      }
+    }
+
+    let lastRenderedIssueId = null;
+
+    function renderDetailPane() {
+      const pane = document.getElementById("detail-pane");
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+
+      if (!issue) {
+        pane.classList.remove("open");
+        document.body.classList.remove("peek-open");
+        lastRenderedIssueId = null;
+        return;
+      }
+
+      const issueChanged = lastRenderedIssueId !== issue.id;
+      lastRenderedIssueId = issue.id;
+
+      pane.classList.add("open");
+      document.body.classList.add("peek-open");
+
+      if (issueChanged) {
+        document.getElementById("new-comment-input").value = "";
+        const scrollEl = pane.querySelector(".peek-scroll");
+        if (scrollEl) {
+          scrollEl.classList.remove("switching");
+          void scrollEl.offsetWidth;
+          scrollEl.classList.add("switching");
+        }
+      }
+
+      const titleInput = document.getElementById("detail-title-input");
+      if (document.activeElement !== titleInput) {
+        titleInput.value = issue.title;
+      }
+
+      // Properties Block
+      const propsEl = document.getElementById("detail-props");
+      propsEl.innerHTML = "";
+      const bucket = getBucket(issue);
+
+      const addPropRow = (iconSvg, labelText, valueNode) => {
+        const r = document.createElement("div");
+        r.className = "prop-row";
+        const l = document.createElement("div");
+        l.className = "prop-label";
+        l.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">${iconSvg}</svg>`;
+        const lTxt = document.createElement("span");
+        lTxt.textContent = labelText;
+        l.appendChild(lTxt);
+        const v = document.createElement("div");
+        v.className = "prop-value";
+        v.appendChild(valueNode);
+        r.append(l, v);
+        propsEl.appendChild(r);
+      };
+
+      // Type Prop
+      const curType = getIssueType(issue);
+      const tPill = createTypePill(curType, true, true);
+      tPill.addEventListener("click", e => {
+        e.stopPropagation();
+        openPopover(
+          tPill,
+          "設定項目類型 (Type)",
+          TYPE_ITEMS.map(t => ({
+            value: t.value,
+            active: curType === t.value,
+            node: () => createTypePill(t.value, true, false)
+          })),
+          val => updateIssueType(issue, val)
+        );
+      });
+      addPropRow('<rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1"/><rect x="9" y="9" width="4.5" height="4.5" rx="1"/>', "Type", tPill);
+
+      // Status Prop
+      const sPill = createStatusPill(bucket, true);
+      sPill.addEventListener("click", e => {
+        e.stopPropagation();
+        openPopover(
+          sPill,
+          "切換狀態",
+          STATUS_ITEMS.map(s => ({
+            value: s.bucket,
+            active: bucket === s.bucket,
+            node: () => createStatusPill(s.bucket, false)
+          })),
+          val => updateIssueBucket(issue, val)
+        );
+      });
+      addPropRow('<circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="2" fill="currentColor"/>', "Status", sPill);
+
+      // Priority Prop
+      const pPill = createPriorityPill(issue.priority || 0, false, true);
+      pPill.addEventListener("click", e => {
+        e.stopPropagation();
+        openPopover(
+          pPill,
+          "設定優先級",
+          PRIORITY_ITEMS.map(p => ({
+            value: p.value,
+            active: (issue.priority || 0) === p.value,
+            node: () => createPriorityPill(p.value, false, false)
+          })),
+          val => updateIssuePriority(issue, val)
+        );
+      });
+      addPropRow('<path d="M8.5 2L4 9h4l-.5 5L12 7H8l.5-5z"/>', "Priority", pPill);
+
+      // Project Prop
+      const projBtn = document.createElement("button");
+      projBtn.type = "button";
+      projBtn.className = "tag-pill";
+      projBtn.style.cssText = "background: var(--bg-subtle); color: var(--ink-strong); border-radius: 999px;";
+      if (issue.project) {
+        projBtn.appendChild(createProjectChipContent(issue.project));
+      } else {
+        projBtn.textContent = "未指定";
+      }
+      projBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        openPopover(
+          projBtn,
+          "移動至專案",
+          state.projects.map(p => ({
+            value: p.id,
+            active: issue.project?.id === p.id,
+            node: () => createProjectChipContent(p)
+          })),
+          val => {
+            if (issue.project?.id !== val) {
+              updateIssueFields(issue, { projectId: val }, "已移動至專案");
+            }
+          }
+        );
+      });
+      addPropRow('<path d="M2.5 4.5a1 1 0 0 1 1-1h3l1.5 1.5h4.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-7.5z"/>', "Project", projBtn);
+
+      // Labels Prop
+      const labelsFrag = document.createDocumentFragment();
+      for (const label of getIssueLabels(issue)) {
+        const chip = createLabelChip(label, true);
+        chip.addEventListener("click", e => {
+          e.stopPropagation();
+          openLabelPopover(chip, { issue });
+        });
+        labelsFrag.appendChild(chip);
+      }
+      const addLblBtn = document.createElement("button");
+      addLblBtn.type = "button";
+      addLblBtn.className = "label-add-pill";
+      addLblBtn.textContent = "+ 標籤";
+      addLblBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        openLabelPopover(addLblBtn, { issue });
+      });
+      labelsFrag.appendChild(addLblBtn);
+      addPropRow('<path d="M2.5 8.5V3.5a1 1 0 0 1 1-1h5l5 5-5 5-6-4z"/><circle cx="5.5" cy="5.5" r="0.9" fill="currentColor" stroke="none"/>', "Labels", labelsFrag);
+
+      // Timestamps Props
+      const openVal = document.createElement("span");
+      openVal.className = "prop-time-val";
+      openVal.textContent = `${formatDateTime(issue.createdAt, true)} (${formatRelative(issue.createdAt)})`;
+      addPropRow('<circle cx="8" cy="8" r="5.5"/><path d="M8 4.8v3.4l2.2 1.3"/>', "Opened", openVal);
+
+      const modVal = document.createElement("span");
+      modVal.className = "prop-time-val";
+      modVal.textContent = `${formatDateTime(issue.updatedAt, true)} (${formatRelative(issue.updatedAt)})`;
+      addPropRow('<circle cx="8" cy="8" r="5.5"/><path d="M8 4.8v3.4l2.2 1.3"/>', "Modified", modVal);
+
+      if (issue.completedAt) {
+        const doneVal = document.createElement("span");
+        doneVal.className = "prop-time-val";
+        doneVal.textContent = formatDateTime(issue.completedAt, true);
+        addPropRow('<path d="M3.5 8.5l3 3 6-6"/>', "Closed", doneVal);
+      }
+
+      // Description
+      const descInput = document.getElementById("detail-desc-input");
+      if (!state.descDirty && document.activeElement !== descInput) {
+        descInput.value = issue.description || "";
+      }
+      document.getElementById("save-desc-btn").style.display = state.descDirty ? "inline-block" : "none";
+
+      // Discussion Thread
+      const rawComments = [...(issue.comments?.nodes || [])];
+      rawComments.sort((a, b) => {
+        const da = new Date(a.createdAt).getTime();
+        const db = new Date(b.createdAt).getTime();
+        return state.commentSortAsc ? da - db : db - da;
+      });
+
+      document.getElementById("thread-title").textContent = `討論串筆記 (${rawComments.length})`;
+      document.getElementById("thread-sort-btn").textContent = state.commentSortAsc ? "時間：舊到新" : "時間：新到舊";
+
+      const commentListEl = document.getElementById("comment-list");
+      commentListEl.innerHTML = "";
+
+      if (rawComments.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "color: var(--ink-faint); font-size: 13px; padding: 4px 0 8px;";
+        empty.textContent = "還沒有筆記，在下方輸入框記下想法或進度。";
+        commentListEl.appendChild(empty);
+      } else {
+        for (const comment of rawComments) {
+          const item = document.createElement("div");
+          item.className = "comment-item";
+
+          const avatar = document.createElement("div");
+          avatar.className = "comment-avatar";
+          avatar.textContent = state.viewerName;
+
+          const content = document.createElement("div");
+          content.className = "comment-content";
+
+          const meta = document.createElement("div");
+          meta.className = "comment-meta";
+
+          const timeEl = document.createElement("span");
+          timeEl.className = "comment-time";
+          const edited =
+            comment.updatedAt &&
+            new Date(comment.updatedAt).getTime() - new Date(comment.createdAt).getTime() > 2000;
+          timeEl.textContent = formatDateTime(comment.createdAt, true) + (edited ? " (已編輯)" : "");
+
+          const actions = document.createElement("div");
+          actions.className = "comment-actions";
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.className = "mini-btn";
+          editBtn.textContent = "編輯";
+          editBtn.addEventListener("click", () => {
+            state.editingCommentId = comment.id;
+            renderDetailPane();
+          });
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "mini-btn danger";
+          delBtn.textContent = "刪除";
+          delBtn.addEventListener("click", () => deleteComment(issue, comment));
+
+          actions.append(editBtn, delBtn);
+          meta.append(timeEl, actions);
+          content.appendChild(meta);
+
+          if (state.editingCommentId === comment.id) {
+            const editArea = document.createElement("textarea");
+            editArea.className = "notion-textarea";
+            editArea.style.cssText = "border:1px solid var(--border-strong); background:var(--bg-canvas); margin:4px 0;";
+            editArea.rows = 3;
+            editArea.value = comment.body || "";
+            editArea.addEventListener("keydown", e => {
+              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                e.preventDefault();
+                updateComment(issue, comment, editArea.value);
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                state.editingCommentId = null;
+                renderDetailPane();
+              }
+            });
+
+            const editFooter = document.createElement("div");
+            editFooter.style.cssText = "display:flex; gap:6px; justify-content:flex-end; margin-top:4px;";
+            const cancelBtn = document.createElement("button");
+            cancelBtn.type = "button";
+            cancelBtn.className = "btn-subtle";
+            cancelBtn.textContent = "取消";
+            cancelBtn.addEventListener("click", () => {
+              state.editingCommentId = null;
+              renderDetailPane();
+            });
+            const saveBtn = document.createElement("button");
+            saveBtn.type = "button";
+            saveBtn.className = "btn-blue";
+            saveBtn.textContent = "儲存變更";
+            saveBtn.addEventListener("click", () => updateComment(issue, comment, editArea.value));
+
+            editFooter.append(cancelBtn, saveBtn);
+            content.append(editArea, editFooter);
+            setTimeout(() => {
+              editArea.focus();
+              editArea.setSelectionRange(editArea.value.length, editArea.value.length);
+            }, 0);
+          } else {
+            const textEl = document.createElement("div");
+            textEl.className = "comment-text";
+            appendFormattedText(textEl, comment.body || "");
+            content.appendChild(textEl);
+          }
+
+          item.append(avatar, content);
+          commentListEl.appendChild(item);
+        }
+      }
+    }
+
+    function renderAll() {
+      renderSidebar();
+      renderPageHeader();
+      renderDatabaseTable();
+      renderDetailPane();
+    }
+
+    /* ================= Event Listeners ================= */
+    // Sidebar Collapse (Desktop) & Off-Canvas Drawer (Mobile <= 768px)
+    function isMobileViewport() {
+      return window.matchMedia("(max-width: 768px)").matches;
+    }
+
+    function openMobileSidebar() {
+      document.body.classList.add("mobile-nav-open");
+    }
+
+    function closeMobileSidebar() {
+      document.body.classList.remove("mobile-nav-open");
+    }
+
+    function setSidebarCollapsed(collapsed) {
+      document.body.classList.toggle("sidebar-collapsed", collapsed);
+      document.getElementById("open-sidebar-btn").style.display = collapsed ? "grid" : "none";
+      localStorage.setItem("sidebar_collapsed", collapsed ? "1" : "0");
+    }
+    if (localStorage.getItem("sidebar_collapsed") === "1") setSidebarCollapsed(true);
+
+    document.getElementById("close-sidebar-btn").addEventListener("click", () => {
+      if (isMobileViewport()) {
+        closeMobileSidebar();
+      } else {
+        setSidebarCollapsed(true);
+      }
+    });
+
+    document.getElementById("open-sidebar-btn").addEventListener("click", () => {
+      if (isMobileViewport()) {
+        openMobileSidebar();
+      } else {
+        setSidebarCollapsed(false);
+      }
+    });
+
+    document.getElementById("sidebar-backdrop").addEventListener("click", closeMobileSidebar);
+
+    document.getElementById("api-key-btn").addEventListener("click", () => {
+      closeMobileSidebar();
+      openAuthModal(Boolean(getApiKey()));
+    });
+
+    // Quick Composer
+    document.getElementById("hero-label-badge").addEventListener("click", () => {
+      if (!state.labelFilter) return;
+      state.labelFilter = null;
+      renderAll();
+    });
+
+    document.getElementById("quick-add-form").addEventListener("submit", e => {
+      e.preventDefault();
+      createIssue(document.getElementById("new-task-input").value);
+    });
+
+    document.getElementById("quick-type-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openPopover(
+        e.currentTarget,
+        "選擇項目類型 (Type)",
+        TYPE_ITEMS.map(t => ({
+          value: t.value,
+          active: state.quickAddType === t.value,
+          node: () => createTypePill(t.value, true, false)
+        })),
+        val => {
+          state.quickAddType = val;
+          renderPageHeader();
+        }
+      );
+    });
+
+    document.getElementById("quick-label-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openLabelPopover(e.currentTarget, { quickAdd: true });
+    });
+
+    document.getElementById("quick-prio-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openPopover(
+        e.currentTarget,
+        "選擇優先級",
+        PRIORITY_ITEMS.map(p => ({
+          value: p.value,
+          active: state.quickAddPriority === p.value,
+          node: () => createPriorityPill(p.value, false, false)
+        })),
+        val => {
+          state.quickAddPriority = val;
+          renderPageHeader();
+        }
+      );
+    });
+
+    document.getElementById("quick-proj-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openPopover(
+        e.currentTarget,
+        "新增到哪個專案",
+        state.projects.map(p => ({
+          value: p.id,
+          active: state.quickAddProjectId === p.id,
+          node: () => createProjectChipContent(p)
+        })),
+        val => {
+          state.quickAddProjectId = val;
+          const validIds = new Set(getScopedLabels(val).map(l => l.id));
+          state.quickAddLabelIds = state.quickAddLabelIds.filter(id => validIds.has(id));
+          renderPageHeader();
+        }
+      );
+    });
+
+    // View Tabs, Search, Sort
+    document.querySelectorAll("#filter-tabs .view-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        state.statusFilter = tab.dataset.filter;
+        localStorage.setItem("status_filter", state.statusFilter);
+        renderAll();
+      });
+    });
+
+    const searchWrap = document.getElementById("search-wrap");
+    const searchInput = document.getElementById("search-input");
+    document.getElementById("search-toggle-btn").addEventListener("click", () => {
+      searchWrap.classList.toggle("open");
+      if (searchWrap.classList.contains("open")) {
+        searchInput.focus();
+      } else {
+        searchInput.value = "";
+        state.searchQuery = "";
+        renderAll();
+      }
+    });
+
+    searchInput.addEventListener("input", e => {
+      state.searchQuery = e.target.value;
+      renderPageHeader();
+      renderDatabaseTable();
+    });
+
+    document.getElementById("type-filter-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openPopover(
+        e.currentTarget,
+        "依 Type 篩選",
+        [
+          {
+            value: "all",
+            active: state.typeFilter === "all",
+            node: () => {
+              const s = document.createElement("span");
+              s.textContent = "全部類型 (All)";
+              return s;
+            }
+          },
+          ...TYPE_ITEMS.map(t => ({
+            value: t.value,
+            active: state.typeFilter === t.value,
+            node: () => createTypePill(t.value, true, false)
+          }))
+        ],
+        val => {
+          state.typeFilter = val;
+          state.quickAddType = val === "all" ? "task" : val;
+          renderAll();
+        }
+      );
+    });
+
+    document.getElementById("sort-menu-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openPopover(
+        e.currentTarget,
+        "排序方式",
+        SORT_ITEMS.map(item => ({
+          value: item.value,
+          active: state.sortBy === item.value,
+          node: () => {
+            const s = document.createElement("span");
+            s.textContent = item.label;
+            return s;
+          }
+        })),
+        val => {
+          state.sortBy = val;
+          localStorage.setItem("sort_by", val);
+          renderAll();
+        }
+      );
+    });
+
+    document.getElementById("refresh-btn").addEventListener("click", loadData);
+    document.getElementById("batch-delete-btn").addEventListener("click", deleteCheckedIssues);
+    document.getElementById("select-mode-btn").addEventListener("click", () => {
+      state.selectMode = !state.selectMode;
+      if (!state.selectMode) state.checkedIssueIds.clear();
+      renderDatabaseTable();
+    });
+    document.getElementById("select-all-btn").addEventListener("click", () => {
+      const items = getFilteredAndSortedIssues();
+      const allChecked = items.length > 0 && items.every(i => state.checkedIssueIds.has(i.id));
+      if (allChecked) {
+        items.forEach(i => state.checkedIssueIds.delete(i.id));
+      } else {
+        items.forEach(i => state.checkedIssueIds.add(i.id));
+      }
+      renderDatabaseTable();
+    });
+
+    // Detail Peek Events
+    document.getElementById("detail-close-btn").addEventListener("click", () => {
+      flushDetailEdits();
+      state.selectedIssueId = null;
+      renderAll();
+    });
+
+    document.getElementById("detail-delete-btn").addEventListener("click", () => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      if (issue) deleteIssue(issue);
+    });
+
+    document.getElementById("detail-title-input").addEventListener("blur", e => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      const val = e.target.value.trim();
+      if (issue && val && val !== issue.title) {
+        updateIssueFields(issue, { title: val }, "已更新標題");
+      } else if (issue) {
+        e.target.value = issue.title;
+      }
+    });
+
+    document.getElementById("detail-title-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.target.blur();
+      }
+    });
+
+    document.getElementById("detail-desc-input").addEventListener("input", e => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      state.descDirty = issue ? e.target.value !== (issue.description || "") : false;
+      document.getElementById("save-desc-btn").style.display = state.descDirty ? "inline-block" : "none";
+    });
+
+    document.getElementById("detail-desc-input").addEventListener("blur", e => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      if (issue && state.descDirty) {
+        updateIssueFields(issue, { description: e.target.value }, "已自動儲存說明");
+      }
+    });
+
+    document.getElementById("detail-desc-input").addEventListener("keydown", e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        const issue = state.issues.find(i => i.id === state.selectedIssueId);
+        if (issue && state.descDirty) {
+          updateIssueFields(issue, { description: e.target.value }, "已儲存說明");
+        }
+      }
+    });
+
+    document.getElementById("save-desc-btn").addEventListener("click", () => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      if (issue) {
+        updateIssueFields(issue, { description: document.getElementById("detail-desc-input").value }, "已儲存說明");
+      }
+    });
+
+    document.getElementById("thread-sort-btn").addEventListener("click", () => {
+      state.commentSortAsc = !state.commentSortAsc;
+      renderDetailPane();
+    });
+
+    document.getElementById("add-comment-btn").addEventListener("click", () => {
+      const issue = state.issues.find(i => i.id === state.selectedIssueId);
+      if (issue) addComment(issue, document.getElementById("new-comment-input").value);
+    });
+
+    document.getElementById("new-comment-input").addEventListener("keydown", e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        const issue = state.issues.find(i => i.id === state.selectedIssueId);
+        if (issue) addComment(issue, e.target.value);
+      }
+    });
+
+    // New Project Drawer
+    document.getElementById("toggle-new-project-btn").addEventListener("click", () => {
+      const form = document.getElementById("new-project-form");
+      form.classList.toggle("open");
+      if (form.classList.contains("open")) {
+        document.getElementById("new-project-name").focus();
+      }
+    });
+
+    document.getElementById("cancel-project-btn").addEventListener("click", () => {
+      document.getElementById("new-project-form").classList.remove("open");
+    });
+
+    document.getElementById("create-project-btn").addEventListener("click", () => {
+      createProject(
+        document.getElementById("new-project-name").value,
+        document.getElementById("new-project-desc").value
+      );
+    });
+
+    ["new-project-name", "new-project-desc"].forEach(id => {
+      document.getElementById(id).addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          createProject(
+            document.getElementById("new-project-name").value,
+            document.getElementById("new-project-desc").value
+          );
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          e.stopPropagation();
+          document.getElementById("new-project-form").classList.remove("open");
+        }
+      });
+    });
+
+    // Theme Toggle + iOS Status Bar Theme Color Sync
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+
+    function syncThemeMetaColor() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = current ? current === "dark" : prefersDark;
+      const meta = document.getElementById("meta-theme-color");
+      if (meta) meta.setAttribute("content", isDark ? "#191919" : "#ffffff");
+    }
+    syncThemeMetaColor();
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncThemeMetaColor);
+
+    document.getElementById("theme-btn").addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = current ? current === "dark" : prefersDark;
+      const next = isDark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      syncThemeMetaColor();
+    });
+
+    // Auto-sync with Linear when returning to the app on iPhone / switching tabs
+    function maybeAutoSyncOnResume() {
+      if (document.visibilityState === "visible" && getApiKey() && Date.now() - lastSyncAt > 15000) {
+        loadData();
+      }
+    }
+    document.addEventListener("visibilitychange", maybeAutoSyncOnResume);
+    window.addEventListener("focus", maybeAutoSyncOnResume);
+
+    // Register PWA Service Worker for Home Screen app updates
+    if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
