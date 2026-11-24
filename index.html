@@ -1957,7 +1957,6 @@
 
     .sidebar-backdrop,
     .popover-backdrop,
-    .mobile-cat-rail,
     .sidebar-edit-btn,
     .mobile-back-label,
     .mobile-move-btns,
@@ -2316,7 +2315,7 @@
         display: none;
       }
 
-      /* 3. Scrollable Mobile Workspace & 1-Tap Category Switcher Rail */
+      /* 3. Scrollable Mobile Workspace */
       .page-scroll {
         -webkit-overflow-scrolling: touch;
       }
@@ -2328,56 +2327,6 @@
 
       body.composer-open .page-container {
         padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px));
-      }
-
-      .mobile-cat-rail {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        overflow-x: auto;
-        margin: 0 -14px 12px;
-        padding: 2px 14px 4px;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .mobile-cat-rail::-webkit-scrollbar {
-        display: none;
-      }
-
-      .mobile-cat-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 12px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-subtle);
-        color: var(--ink-muted);
-        font-family: inherit;
-        font-size: 13px;
-        font-weight: 500;
-        white-space: nowrap;
-        flex-shrink: 0;
-        cursor: pointer;
-        transition: background 0.14s, border-color 0.14s, color 0.14s;
-      }
-
-      .mobile-cat-chip.active {
-        background: color-mix(in srgb, var(--cat-color, var(--blue)) 16%, var(--bg-elevated));
-        border-color: color-mix(in srgb, var(--cat-color, var(--blue)) 48%, var(--border));
-        color: var(--ink-strong);
-        font-weight: 600;
-      }
-
-      .mobile-cat-count {
-        font-size: 11px;
-        color: var(--ink-faint);
-        font-variant-numeric: tabular-nums;
-      }
-
-      .mobile-cat-chip.active .mobile-cat-count {
-        color: var(--ink-muted);
       }
 
       /* 4. Non-Squished Status Tabs & Single-Row Filter Strip */
@@ -2945,9 +2894,6 @@
 
     <div class="page-scroll">
       <div class="page-container">
-        <!-- Mobile 1-Tap Category Switcher Rail -->
-        <div class="mobile-cat-rail" id="mobile-cat-rail"></div>
-
         <!-- ChatGPT-Style Pill Composer (Floats at Thumb Zone on Mobile) -->
         <form class="pill-composer" id="quick-add-form">
           <button class="pill-trigger" type="button" id="quick-proj-btn" style="display:none;"></button>
@@ -4856,68 +4802,11 @@
     }
 
     /* ================= Rendering ================= */
-    function renderMobileCatRail() {
-      const railEl = document.getElementById("mobile-cat-rail");
-      if (!railEl) return;
-      railEl.innerHTML = "";
-
-      const totalOpen = state.issues.filter(i => getBucket(i) !== "closed").length;
-      const allVisual = getProjectVisual(null);
-
-      const makeCatChip = (id, name, visual, openCount) => {
-        const chip = document.createElement("button");
-        chip.type = "button";
-        const isActive = state.selectedProjectId === id;
-        chip.className = "mobile-cat-chip" + (isActive ? " active" : "");
-        chip.style.setProperty("--cat-color", visual.color);
-
-        const ic = document.createElement("span");
-        ic.style.cssText = `display:inline-flex; align-items:center; color:${visual.color};`;
-        ic.innerHTML = makeProjectSvg(visual.svg, 13);
-
-        const txt = document.createElement("span");
-        txt.textContent = name;
-        chip.append(ic, txt);
-
-        if (openCount > 0) {
-          const cnt = document.createElement("span");
-          cnt.className = "mobile-cat-count";
-          cnt.textContent = String(openCount);
-          chip.appendChild(cnt);
-        }
-
-        chip.addEventListener("click", () => {
-          state.selectedProjectId = id;
-          state.checkedIssueIds.clear();
-          state.selectMode = false;
-          state.labelFilter = null;
-          state.quickAddLabelIds = [];
-          localStorage.setItem("selected_project_id", id);
-          renderAll();
-          requestAnimationFrame(() => {
-            const activeChip = railEl.querySelector(".mobile-cat-chip.active");
-            if (activeChip) activeChip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-          });
-        });
-        return chip;
-      };
-
-      railEl.appendChild(makeCatChip(ALL_PROJECTS_ID, "所有專案", allVisual, totalOpen));
-      for (const project of state.projects) {
-        const openCount = state.issues.filter(
-          i => i.project && i.project.id === project.id && getBucket(i) !== "closed"
-        ).length;
-        railEl.appendChild(makeCatChip(project.id, project.name, getProjectVisual(project), openCount));
-      }
-    }
-
     function renderSidebar() {
       const sidebarEl = document.getElementById("sidebar");
       const editBtnEl = document.getElementById("sidebar-edit-btn");
       sidebarEl.classList.toggle("editing", state.sidebarEditing);
       if (editBtnEl) editBtnEl.textContent = state.sidebarEditing ? "完成" : "管理";
-
-      renderMobileCatRail();
 
       const listEl = document.getElementById("project-list");
       listEl.innerHTML = "";
@@ -6116,6 +6005,150 @@
     });
 
     document.getElementById("sidebar-backdrop").addEventListener("click", closeMobileSidebar);
+
+    // Interactive Mobile Touch Swipe Gestures (Swipe Right -> Open Sidebar / Close Detail; Swipe Left -> Close Sidebar)
+    (function initMobileSwipeGestures() {
+      const sidebarEl = document.getElementById("sidebar");
+      const backdropEl = document.getElementById("sidebar-backdrop");
+      const detailEl = document.getElementById("detail-pane");
+      let gesture = null;
+
+      document.addEventListener("touchstart", e => {
+        if (!isMobileViewport() || e.touches.length !== 1) {
+          gesture = null;
+          return;
+        }
+        if (
+          popoverEl.classList.contains("open") ||
+          confirmOverlayEl.classList.contains("open") ||
+          authOverlayEl.classList.contains("open")
+        ) {
+          gesture = null;
+          return;
+        }
+
+        const tag = (e.target.tagName || "").toLowerCase();
+        if (tag === "input" || tag === "textarea") {
+          gesture = null;
+          return;
+        }
+
+        const t = e.touches[0];
+        const navOpen = document.body.classList.contains("mobile-nav-open");
+        const peekOpen = Boolean(state.selectedIssueId && detailEl.classList.contains("open"));
+
+        if (!navOpen && !peekOpen) {
+          const hScroll = e.target.closest("#filter-tabs, #label-bar");
+          if (hScroll && hScroll.scrollLeft > 2 && t.clientX > 28) {
+            gesture = null;
+            return;
+          }
+        }
+
+        gesture = {
+          mode: navOpen ? "close-nav" : (peekOpen ? "close-detail" : "open-nav"),
+          startX: t.clientX,
+          startY: t.clientY,
+          lastX: t.clientX,
+          startTime: Date.now(),
+          axis: null,
+          width: sidebarEl.offsetWidth || Math.min(300, Math.round(window.innerWidth * 0.84)),
+          screenW: window.innerWidth || 390
+        };
+      }, { passive: true });
+
+      document.addEventListener("touchmove", e => {
+        if (!gesture || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const dx = t.clientX - gesture.startX;
+        const dy = t.clientY - gesture.startY;
+        gesture.lastX = t.clientX;
+
+        if (!gesture.axis) {
+          if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+          const isHoriz = Math.abs(dx) > Math.abs(dy) * 1.25;
+          if (gesture.mode === "open-nav" && isHoriz && dx > 0) {
+            gesture.axis = "x";
+            sidebarEl.style.transition = "none";
+            backdropEl.style.transition = "none";
+          } else if (gesture.mode === "close-nav" && isHoriz && dx < 0) {
+            gesture.axis = "x";
+            sidebarEl.style.transition = "none";
+            backdropEl.style.transition = "none";
+          } else if (gesture.mode === "close-detail" && isHoriz && dx > 0) {
+            gesture.axis = "x";
+            detailEl.style.transition = "none";
+          } else {
+            gesture.axis = "y";
+            gesture = null;
+            return;
+          }
+        }
+
+        if (gesture.axis === "x") {
+          if (e.cancelable) e.preventDefault();
+          if (gesture.mode === "open-nav") {
+            const w = gesture.width;
+            const clamped = Math.max(0, Math.min(w, dx));
+            const progress = clamped / w;
+            sidebarEl.style.transform = `translateX(${clamped - w}px)`;
+            sidebarEl.style.pointerEvents = "auto";
+            backdropEl.style.opacity = String(progress);
+          } else if (gesture.mode === "close-nav") {
+            const w = gesture.width;
+            const clamped = Math.max(-w, Math.min(0, dx));
+            const progress = Math.max(0, 1 + clamped / w);
+            sidebarEl.style.transform = `translateX(${clamped}px)`;
+            backdropEl.style.opacity = String(progress);
+          } else if (gesture.mode === "close-detail") {
+            const clamped = Math.max(0, dx);
+            detailEl.style.transform = `translateX(${clamped}px)`;
+          }
+        }
+      }, { passive: false });
+
+      const finishGesture = () => {
+        if (!gesture) return;
+        const g = gesture;
+        gesture = null;
+        if (g.axis !== "x") return;
+
+        const dx = g.lastX - g.startX;
+        const dt = Math.max(1, Date.now() - g.startTime);
+        const vx = dx / dt;
+
+        sidebarEl.style.transition = "";
+        sidebarEl.style.transform = "";
+        sidebarEl.style.pointerEvents = "";
+        backdropEl.style.transition = "";
+        backdropEl.style.opacity = "";
+        detailEl.style.transition = "";
+        detailEl.style.transform = "";
+
+        if (g.mode === "open-nav") {
+          if (dx > 54 || (dx > 22 && vx > 0.35)) {
+            openMobileSidebar();
+          } else {
+            closeMobileSidebar();
+          }
+        } else if (g.mode === "close-nav") {
+          if (dx < -54 || (dx < -22 && vx < -0.35)) {
+            closeMobileSidebar();
+          } else {
+            openMobileSidebar();
+          }
+        } else if (g.mode === "close-detail") {
+          if (dx > 72 || (dx > 28 && vx > 0.4)) {
+            flushDetailEdits();
+            state.selectedIssueId = null;
+            renderAll();
+          }
+        }
+      };
+
+      document.addEventListener("touchend", finishGesture, { passive: true });
+      document.addEventListener("touchcancel", finishGesture, { passive: true });
+    })();
 
     document.getElementById("api-key-btn").addEventListener("click", () => {
       closeMobileSidebar();
