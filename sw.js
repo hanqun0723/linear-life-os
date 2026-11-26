@@ -1,4 +1,4 @@
-const CACHE_NAME = "linear-life-shell-v4";
+const CACHE_NAME = "linear-life-shell-v5";
 const SHELL_ASSETS = [
   "./",
   "./index.html",

@@ -60,6 +60,16 @@
       --prio-4-bg: #f1f1ef;
       --prio-4-ink: #5a5955;
 
+      /* Due Date Semantic Pills */
+      --due-overdue-bg: #ffe2dd;
+      --due-overdue-ink: #b02a1d;
+      --due-today-bg: #fdecc8;
+      --due-today-ink: #8a5612;
+      --due-soon-bg: #d3e5ef;
+      --due-soon-ink: #1b5a8a;
+      --due-normal-bg: #f1f1ef;
+      --due-normal-ink: #5a5955;
+
       --shadow-pill: 0 2px 14px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.06);
       --shadow-popover: 0 8px 28px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
       --shadow-peek: -12px 0 36px rgba(0, 0, 0, 0.08);
@@ -106,6 +116,15 @@
         --prio-4-bg: #2c2c2c;
         --prio-4-ink: #b5b5b3;
 
+        --due-overdue-bg: rgba(229, 83, 75, 0.22);
+        --due-overdue-ink: #ff8c82;
+        --due-today-bg: rgba(217, 115, 13, 0.22);
+        --due-today-ink: #f6b365;
+        --due-soon-bg: rgba(56, 139, 253, 0.2);
+        --due-soon-ink: #7bb8ff;
+        --due-normal-bg: #2c2c2c;
+        --due-normal-ink: #c7c7c5;
+
         --shadow-pill: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
         --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 255, 255, 0.09);
         --shadow-peek: -12px 0 40px rgba(0, 0, 0, 0.45);
@@ -150,6 +169,15 @@
       --prio-3-ink: #7bb8ff;
       --prio-4-bg: #2c2c2c;
       --prio-4-ink: #b5b5b3;
+
+      --due-overdue-bg: rgba(229, 83, 75, 0.22);
+      --due-overdue-ink: #ff8c82;
+      --due-today-bg: rgba(217, 115, 13, 0.22);
+      --due-today-ink: #f6b365;
+      --due-soon-bg: rgba(56, 139, 253, 0.2);
+      --due-soon-ink: #7bb8ff;
+      --due-normal-bg: #2c2c2c;
+      --due-normal-ink: #c7c7c5;
 
       --shadow-pill: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
       --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 255, 255, 0.09);
@@ -1010,7 +1038,7 @@
 
     .db-grid {
       display: grid;
-      grid-template-columns: minmax(190px, 1fr) 88px 88px 100px 146px 150px;
+      grid-template-columns: minmax(185px, 1fr) 86px 84px 96px 110px 146px 150px;
       min-width: 0;
     }
 
@@ -2104,13 +2132,179 @@
       .peek-scroll { padding: 20px 18px 40px; }
     }
 
-    @container workspace (max-width: 850px) {
+    /* Due Date Pills & Custom Calendar Picker */
+    .due-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter 0.12s, background 0.12s, color 0.12s;
+    }
+
+    .due-pill:hover { filter: brightness(0.95); }
+    .due-overdue { background: var(--due-overdue-bg); color: var(--due-overdue-ink); font-weight: 600; }
+    .due-today { background: var(--due-today-bg); color: var(--due-today-ink); font-weight: 600; }
+    .due-soon { background: var(--due-soon-bg); color: var(--due-soon-ink); }
+    .due-normal { background: var(--due-normal-bg); color: var(--due-normal-ink); }
+    .due-empty {
+      background: transparent;
+      color: var(--ink-faint);
+      padding: 3px 6px;
+    }
+    .due-empty:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-strong);
+    }
+
+    .date-picker-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 4px 6px 6px;
+      width: 248px;
+      user-select: none;
+    }
+
+    .date-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .date-preset-btn {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .date-preset-btn:hover { background: var(--bg-hover); }
+    .date-preset-btn.active {
+      background: color-mix(in srgb, var(--blue) 18%, var(--bg-subtle));
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 2px 0;
+    }
+
+    .cal-month-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-strong);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-nav-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .cal-nav-btn {
+      width: 26px;
+      height: 26px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .cal-nav-btn:hover {
+      background: var(--bg-hover);
+      color: var(--ink-strong);
+    }
+
+    .cal-weekdays,
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+    }
+
+    .cal-weekday {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      padding: 2px 0;
+    }
+
+    .cal-day {
+      height: 31px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .cal-day:hover { background: var(--bg-hover); }
+    .cal-day.other-month { color: var(--ink-faint); opacity: 0.55; }
+    .cal-day.today {
+      box-shadow: inset 0 0 0 1.5px var(--blue);
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .cal-day.selected {
+      background: var(--blue) !important;
+      color: #ffffff !important;
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    .date-clear-btn {
+      width: 100%;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(224, 82, 76, 0.3);
+      background: rgba(224, 82, 76, 0.08);
+      color: #e0524c;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    .date-clear-btn:hover { background: rgba(224, 82, 76, 0.16); }
+
+    @container workspace (max-width: 960px) {
       .db-grid {
-        grid-template-columns: minmax(170px, 1fr) 86px 86px 98px 148px;
+        grid-template-columns: minmax(170px, 1fr) 84px 82px 96px 108px 148px;
         min-width: 0;
       }
-      .db-grid > .db-head-cell:nth-child(5),
-      .db-row > .db-cell:nth-child(5) {
+      .db-grid > .head-opened,
+      .db-row > .opened-cell {
         display: none;
       }
       .view-tab {
@@ -2119,13 +2313,13 @@
       }
     }
 
-    @container workspace (max-width: 660px) {
+    @container workspace (max-width: 760px) {
       .db-grid {
-        grid-template-columns: minmax(140px, 1fr) 84px 84px 94px;
+        grid-template-columns: minmax(145px, 1fr) 82px 80px 94px 104px;
         min-width: 0;
       }
-      .db-grid > .db-head-cell:nth-child(6),
-      .db-row > .db-cell:nth-child(6) {
+      .db-grid > .head-modified,
+      .db-row > .modified-cell {
         display: none;
       }
     }
@@ -2326,7 +2520,7 @@
       }
 
       body.composer-open .page-container {
-        padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(156px + env(safe-area-inset-bottom, 0px));
       }
 
       /* 4. Non-Squished Status Tabs & Single-Row Filter Strip */
@@ -2482,10 +2676,11 @@
         background: transparent !important;
       }
 
-      /* Hide desktop hover tag/trash buttons & empty '無' priority pill on mobile cards */
+      /* Hide desktop hover tag/trash buttons & empty '無' / empty due pills on mobile cards */
       .db-row .row-actions,
       .db-row > .db-cell.is-prio-0,
-      .db-row > .db-cell:nth-child(5) {
+      .db-row > .db-cell.is-due-empty,
+      .db-row > .opened-cell {
         display: none !important;
       }
 
@@ -2533,21 +2728,55 @@
         -webkit-box-orient: vertical;
       }
 
-      .db-row > .db-cell:nth-child(2) {
+      .db-row > .type-cell {
         padding-left: 26px !important;
       }
 
       .type-pill,
-      .tag-pill {
+      .tag-pill,
+      .due-pill {
         padding: 4px 10px;
         font-size: 12px;
       }
 
-      .db-row > .db-cell:nth-child(6) {
+      .db-row > .modified-cell {
         display: inline-flex !important;
         margin-left: auto;
         font-size: 11.5px;
         color: var(--ink-faint);
+      }
+
+      .date-picker-wrap {
+        width: 100%;
+        gap: 10px;
+        padding: 4px 2px 6px;
+      }
+
+      .date-preset-btn {
+        padding: 7px 12px;
+        font-size: 13px;
+      }
+
+      .cal-month-label {
+        font-size: 15px;
+      }
+
+      .cal-nav-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+
+      .cal-day {
+        height: 40px;
+        font-size: 14.5px;
+        border-radius: 10px;
+      }
+
+      .date-clear-btn {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 10px;
       }
 
       .time-full { display: none; }
@@ -2908,6 +3137,10 @@
             <span id="quick-label-text">標籤</span>
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
           </button>
+          <button class="pill-trigger" type="button" id="quick-due-btn">
+            <span id="quick-due-label">期限</span>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
           <button class="pill-trigger" type="button" id="quick-prio-btn">
             <span id="quick-prio-label">無優先級</span>
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
@@ -3156,10 +3389,12 @@
     const SORT_ITEMS = [
       { value: "updated_desc", label: "Modified：新到舊", shortLabel: "最近更新" },
       { value: "updated_asc", label: "Modified：舊到新", shortLabel: "最早更新" },
-      { value: "created_desc", label: "Opened：新到舊", shortLabel: "最新建立" },
-      { value: "created_asc", label: "Opened：舊到新", shortLabel: "最早建立" },
+      { value: "due_asc", label: "Deadline：由近到遠", shortLabel: "期限最近" },
+      { value: "due_desc", label: "Deadline：由遠到近", shortLabel: "期限最遠" },
       { value: "priority_desc", label: "Priority：高到低", shortLabel: "優先級 ↓" },
       { value: "priority_asc", label: "Priority：低到高", shortLabel: "優先級 ↑" },
+      { value: "created_desc", label: "Opened：新到舊", shortLabel: "最新建立" },
+      { value: "created_asc", label: "Opened：舊到新", shortLabel: "最早建立" },
       { value: "type_asc", label: "Type：Task → Goal", shortLabel: "類型 A-Z" },
       { value: "type_desc", label: "Type：Goal → Task", shortLabel: "類型 Z-A" }
     ];
@@ -3187,6 +3422,7 @@
       quickAddProjectId: null,
       quickAddType: "task",
       quickAddPriority: 0,
+      quickAddDueDate: null,
       quickAddLabelIds: [],
       selectedIssueId: null,
       statusFilter: localStorage.getItem("status_filter") || "all",
@@ -3520,6 +3756,111 @@
       return `${Math.floor(days / 30)} 個月前`;
     }
 
+    function toYmdLocal(d) {
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    }
+
+    function parseYmdLocal(ymd) {
+      if (!ymd || typeof ymd !== "string") return null;
+      const parts = ymd.split("-").map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function addDaysYmd(baseDate, days) {
+      const d = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + days);
+      return toYmdLocal(d);
+    }
+
+    function diffDaysFromToday(ymd) {
+      const target = parseYmdLocal(ymd);
+      if (!target) return null;
+      const now = new Date();
+      const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      return Math.round((target.getTime() - todayMidnight) / 86400000);
+    }
+
+    function getDueDateMeta(dueDate, bucket = "open", detailed = false) {
+      if (!dueDate) {
+        return {
+          text: detailed ? "未設定期限" : "—",
+          cls: "due-empty",
+          title: "點擊設定 Deadline"
+        };
+      }
+      const dt = parseYmdLocal(dueDate);
+      if (!dt) {
+        return { text: dueDate, cls: "due-normal", title: dueDate };
+      }
+      const now = new Date();
+      const sameYear = dt.getFullYear() === now.getFullYear();
+      const shortDate = sameYear
+        ? `${pad2(dt.getMonth() + 1)}/${pad2(dt.getDate())}`
+        : `${dt.getFullYear()}/${pad2(dt.getMonth() + 1)}/${pad2(dt.getDate())}`;
+      const fullDate = `${dt.getFullYear()}/${pad2(dt.getMonth() + 1)}/${pad2(dt.getDate())}`;
+      const diff = diffDaysFromToday(dueDate);
+
+      if (bucket === "closed") {
+        return {
+          text: detailed ? fullDate : shortDate,
+          cls: "due-normal",
+          title: `期限 ${fullDate}`
+        };
+      }
+      if (diff < 0) {
+        const late = Math.abs(diff);
+        return {
+          text: detailed ? `${fullDate} (逾期 ${late} 天)` : (late <= 14 ? `逾期 ${late} 天` : `${shortDate} 逾期`),
+          cls: "due-overdue",
+          title: `已逾期 ${late} 天 (${fullDate})`
+        };
+      }
+      if (diff === 0) {
+        return {
+          text: detailed ? `今天到期 (${shortDate})` : "今天到期",
+          cls: "due-today",
+          title: `今天到期 (${fullDate})`
+        };
+      }
+      if (diff === 1) {
+        return {
+          text: detailed ? `明天 (${shortDate})` : "明天",
+          cls: "due-soon",
+          title: `明天到期 (${fullDate})`
+        };
+      }
+      if (diff === 2) {
+        return {
+          text: detailed ? `後天 (${shortDate})` : "後天",
+          cls: "due-soon",
+          title: `後天到期 (${fullDate})`
+        };
+      }
+      return {
+        text: detailed ? `${fullDate} (${diff} 天後)` : shortDate,
+        cls: "due-normal",
+        title: `距離期限還有 ${diff} 天 (${fullDate})`
+      };
+    }
+
+    function createDuePill(dueDate, bucket = "open", detailed = false, interactive = true) {
+      const meta = getDueDateMeta(dueDate, bucket, detailed);
+      const pill = document.createElement(interactive ? "button" : "span");
+      if (interactive) pill.type = "button";
+      pill.className = `due-pill ${meta.cls}`;
+      pill.title = meta.title;
+      if (dueDate || detailed) {
+        pill.insertAdjacentHTML(
+          "beforeend",
+          '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.2" y="3.2" width="11.6" height="10.6" rx="2"/><path d="M5.2 1.8v2.4M10.8 1.8v2.4M2.2 6.5h11.6"/></svg>'
+        );
+      }
+      const txt = document.createElement("span");
+      txt.textContent = meta.text;
+      pill.appendChild(txt);
+      return pill;
+    }
+
     function getBucket(issue) {
       const type = issue?.state?.type;
       if (type === "started") return "progress";
@@ -3685,6 +4026,166 @@
         popoverEl.appendChild(btn);
       }
       positionPopover(anchorEl);
+    }
+
+    function openDatePopover(anchorEl, currentDueDate, onSelect) {
+      const now = new Date();
+      const todayYmd = toYmdLocal(now);
+      const initialDate = parseYmdLocal(currentDueDate) || now;
+      let viewYear = initialDate.getFullYear();
+      let viewMonth = initialDate.getMonth();
+
+      // Calculate upcoming Sunday & next Monday
+      const dow = now.getDay(); // 0=Sun..6=Sat
+      const daysToSun = dow === 0 ? 7 : 7 - dow;
+      const daysToNextMon = dow === 0 ? 1 : 8 - dow;
+
+      const presets = [
+        { label: "今天", ymd: todayYmd },
+        { label: "明天", ymd: addDaysYmd(now, 1) },
+        { label: "本週日", ymd: addDaysYmd(now, daysToSun) },
+        { label: "下週一", ymd: addDaysYmd(now, daysToNextMon) },
+        { label: "+7 天", ymd: addDaysYmd(now, 7) }
+      ];
+
+      const renderCalendar = () => {
+        popoverEl.innerHTML = "";
+
+        const title = document.createElement("div");
+        title.className = "popover-title";
+        title.textContent = "設定任務期限 (Deadline)";
+        popoverEl.appendChild(title);
+
+        const wrap = document.createElement("div");
+        wrap.className = "date-picker-wrap";
+        wrap.addEventListener("click", e => e.stopPropagation());
+
+        const presetRow = document.createElement("div");
+        presetRow.className = "date-presets";
+        for (const p of presets) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "date-preset-btn" + (currentDueDate === p.ymd ? " active" : "");
+          btn.textContent = p.label;
+          btn.addEventListener("click", e => {
+            e.stopPropagation();
+            closePopover();
+            onSelect(p.ymd);
+          });
+          presetRow.appendChild(btn);
+        }
+        wrap.appendChild(presetRow);
+
+        const calHeader = document.createElement("div");
+        calHeader.className = "cal-header";
+        const monthLbl = document.createElement("span");
+        monthLbl.className = "cal-month-label";
+        monthLbl.textContent = `${viewYear} 年 ${viewMonth + 1} 月`;
+
+        const navGroup = document.createElement("div");
+        navGroup.className = "cal-nav-group";
+
+        const prevBtn = document.createElement("button");
+        prevBtn.type = "button";
+        prevBtn.className = "cal-nav-btn";
+        prevBtn.title = "上個月";
+        prevBtn.textContent = "‹";
+        prevBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          viewMonth -= 1;
+          if (viewMonth < 0) {
+            viewMonth = 11;
+            viewYear -= 1;
+          }
+          renderCalendar();
+        });
+
+        const todayJumpBtn = document.createElement("button");
+        todayJumpBtn.type = "button";
+        todayJumpBtn.className = "cal-nav-btn";
+        todayJumpBtn.title = "回到本月";
+        todayJumpBtn.textContent = "今";
+        todayJumpBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          viewYear = now.getFullYear();
+          viewMonth = now.getMonth();
+          renderCalendar();
+        });
+
+        const nextBtn = document.createElement("button");
+        nextBtn.type = "button";
+        nextBtn.className = "cal-nav-btn";
+        nextBtn.title = "下個月";
+        nextBtn.textContent = "›";
+        nextBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          viewMonth += 1;
+          if (viewMonth > 11) {
+            viewMonth = 0;
+            viewYear += 1;
+          }
+          renderCalendar();
+        });
+
+        navGroup.append(prevBtn, todayJumpBtn, nextBtn);
+        calHeader.append(monthLbl, navGroup);
+        wrap.appendChild(calHeader);
+
+        const wkRow = document.createElement("div");
+        wkRow.className = "cal-weekdays";
+        for (const w of ["一", "二", "三", "四", "五", "六", "日"]) {
+          const wEl = document.createElement("span");
+          wEl.className = "cal-weekday";
+          wEl.textContent = w;
+          wkRow.appendChild(wEl);
+        }
+        wrap.appendChild(wkRow);
+
+        const grid = document.createElement("div");
+        grid.className = "cal-grid";
+        const firstDay = new Date(viewYear, viewMonth, 1);
+        const startOffset = (firstDay.getDay() + 6) % 7; // Monday = 0
+        const totalCells = 42;
+
+        for (let i = 0; i < totalCells; i++) {
+          const cellDate = new Date(viewYear, viewMonth, 1 - startOffset + i);
+          const cellYmd = toYmdLocal(cellDate);
+          const isOther = cellDate.getMonth() !== viewMonth;
+          const dBtn = document.createElement("button");
+          dBtn.type = "button";
+          dBtn.className =
+            "cal-day" +
+            (isOther ? " other-month" : "") +
+            (cellYmd === todayYmd ? " today" : "") +
+            (cellYmd === currentDueDate ? " selected" : "");
+          dBtn.textContent = String(cellDate.getDate());
+          dBtn.addEventListener("click", e => {
+            e.stopPropagation();
+            closePopover();
+            onSelect(cellYmd);
+          });
+          grid.appendChild(dBtn);
+        }
+        wrap.appendChild(grid);
+
+        if (currentDueDate) {
+          const clearBtn = document.createElement("button");
+          clearBtn.type = "button";
+          clearBtn.className = "date-clear-btn";
+          clearBtn.textContent = "清除期限";
+          clearBtn.addEventListener("click", e => {
+            e.stopPropagation();
+            closePopover();
+            onSelect(null);
+          });
+          wrap.appendChild(clearBtn);
+        }
+
+        popoverEl.appendChild(wrap);
+        positionPopover(anchorEl);
+      };
+
+      renderCalendar();
     }
 
     function openLabelPopover(anchorEl, { issue = null, quickAdd = false, createOnly = false, projectId = null } = {}) {
@@ -3967,6 +4468,7 @@
                 title
                 description
                 priority
+                dueDate
                 createdAt
                 updatedAt
                 completedAt
@@ -4118,6 +4620,39 @@
         issue.updatedAt = prevUpdated;
         renderAll();
         showToast("更新優先級失敗：" + err.message);
+      }
+    }
+
+    async function updateIssueDueDate(issue, newDueDate) {
+      const normalized = newDueDate || null;
+      if ((issue.dueDate || null) === normalized) return;
+      const prevDue = issue.dueDate || null;
+      const prevUpdated = issue.updatedAt;
+      issue.dueDate = normalized;
+      issue.updatedAt = new Date().toISOString();
+      renderAll();
+
+      try {
+        const res = await gql(`
+          mutation UpdateIssueDueDate($id: String!, $dueDate: TimelessDate) {
+            issueUpdate(id: $id, input: { dueDate: $dueDate }) {
+              success
+              issue { dueDate updatedAt }
+            }
+          }
+        `, { id: issue.id, dueDate: normalized });
+
+        if (res.issueUpdate.issue) {
+          issue.dueDate = res.issueUpdate.issue.dueDate;
+          issue.updatedAt = res.issueUpdate.issue.updatedAt;
+          renderAll();
+        }
+        showToast(normalized ? `已設定期限 ${normalized.replace(/-/g, "/")}` : "已清除期限");
+      } catch (err) {
+        issue.dueDate = prevDue;
+        issue.updatedAt = prevUpdated;
+        renderAll();
+        showToast("更新期限失敗：" + err.message);
       }
     }
 
@@ -4415,6 +4950,7 @@
                 title
                 description
                 priority
+                dueDate
                 createdAt
                 updatedAt
                 completedAt
@@ -4431,6 +4967,7 @@
             projectId: targetProjectId,
             title: trimmed,
             priority,
+            ...(state.quickAddDueDate ? { dueDate: state.quickAddDueDate } : {}),
             ...(labelIds.length ? { labelIds } : {}),
             stateId: state.workflowStates.todo.id,
             assigneeId: state.viewerId
@@ -4446,6 +4983,7 @@
             setComposerExpanded(false);
           }
           state.quickAddPriority = 0;
+          state.quickAddDueDate = null;
           state.quickAddLabelIds = [];
           state.quickAddType = state.typeFilter !== "all" ? state.typeFilter : "task";
           renderAll();
@@ -4748,7 +5286,8 @@
           const inNotes = (issue.comments?.nodes || []).some(c => (c.body || "").toLowerCase().includes(q));
           const inLabels = getIssueLabels(issue).some(l => l.name.toLowerCase().includes(q));
           const inType = getTypeMeta(getIssueType(issue)).label.toLowerCase().includes(q);
-          if (!inTitle && !inDesc && !inNotes && !inLabels && !inType) return false;
+          const inDue = (issue.dueDate || "").toLowerCase().includes(q) || (issue.dueDate || "").replace(/-/g, "/").includes(q);
+          if (!inTitle && !inDesc && !inNotes && !inLabels && !inType && !inDue) return false;
         }
         if (applyLabel && state.labelFilter) {
           if (!getIssueLabels(issue).some(l => l.id === state.labelFilter)) return false;
@@ -4773,6 +5312,19 @@
         const cb = new Date(b.createdAt).getTime();
         const ua = new Date(a.updatedAt).getTime();
         const ub = new Date(b.updatedAt).getTime();
+        if (state.sortBy === "due_asc") {
+          const da = a.dueDate ? parseYmdLocal(a.dueDate)?.getTime() ?? Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
+          const db = b.dueDate ? parseYmdLocal(b.dueDate)?.getTime() ?? Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
+          return da - db || ub - ua;
+        }
+        if (state.sortBy === "due_desc") {
+          if (!a.dueDate && !b.dueDate) return ub - ua;
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          const da = parseYmdLocal(a.dueDate)?.getTime() ?? 0;
+          const db = parseYmdLocal(b.dueDate)?.getTime() ?? 0;
+          return db - da || ub - ua;
+        }
         if (state.sortBy === "priority_desc") {
           const pa = (a.priority || 0) === 0 ? 99 : a.priority;
           const pb = (b.priority || 0) === 0 ? 99 : b.priority;
@@ -5132,6 +5684,17 @@
       const prioMeta = getPriorityMeta(state.quickAddPriority);
       document.getElementById("quick-prio-label").textContent = prioMeta.label;
 
+      const quickDueBtn = document.getElementById("quick-due-btn");
+      const quickDueLbl = document.getElementById("quick-due-label");
+      if (state.quickAddDueDate) {
+        const qDueMeta = getDueDateMeta(state.quickAddDueDate, "open", false);
+        quickDueLbl.textContent = qDueMeta.text;
+        quickDueBtn.style.color = "var(--blue)";
+      } else {
+        quickDueLbl.textContent = "期限";
+        quickDueBtn.style.color = "";
+      }
+
       const quickTypeBtn = document.getElementById("quick-type-btn");
       const qTypeMeta = getTypeMeta(state.quickAddType);
       quickTypeBtn.innerHTML = `<span style="display:inline-flex; align-items:center; color:${qTypeMeta.color};">${makeTypeSvg(qTypeMeta.svg, 12)}</span><span>${qTypeMeta.label}</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>`;
@@ -5412,11 +5975,12 @@
 
       // Column headers
       grid.appendChild(makeTableHead("項目"));
-      grid.appendChild(makeTableHead("Type", "", "type_asc", "type_desc"));
-      grid.appendChild(makeTableHead("Priority", "", "priority_asc", "priority_desc"));
-      grid.appendChild(makeTableHead("Status", ""));
-      grid.appendChild(makeTableHead("Opened", "align-right", "created_asc", "created_desc"));
-      grid.appendChild(makeTableHead("Modified", "align-right", "updated_asc", "updated_desc"));
+      grid.appendChild(makeTableHead("Type", "head-type", "type_asc", "type_desc"));
+      grid.appendChild(makeTableHead("Priority", "head-prio", "priority_asc", "priority_desc"));
+      grid.appendChild(makeTableHead("Status", "head-status"));
+      grid.appendChild(makeTableHead("Deadline", "head-due", "due_asc", "due_desc"));
+      grid.appendChild(makeTableHead("Opened", "align-right head-opened", "created_asc", "created_desc"));
+      grid.appendChild(makeTableHead("Modified", "align-right head-modified", "updated_asc", "updated_desc"));
 
       if (items.length === 0) {
         const empty = document.createElement("div");
@@ -5531,7 +6095,7 @@
         // Col 2: Type Pill
         const issueType = getIssueType(issue);
         const typeCell = document.createElement("div");
-        typeCell.className = "db-cell";
+        typeCell.className = "db-cell type-cell";
         const typePill = createTypePill(issueType, false, true);
         typePill.title = getTypeMeta(issueType).desc;
         typePill.addEventListener("click", e => {
@@ -5571,9 +6135,9 @@
         prioCell.addEventListener("click", onRowClick);
         prioCell.appendChild(prioPill);
 
-        // Col 3: Status Pill
+        // Col 4: Status Pill
         const statusCell = document.createElement("div");
-        statusCell.className = "db-cell";
+        statusCell.className = "db-cell status-cell";
         const statusPill = createStatusPill(bucket, true);
         statusPill.addEventListener("click", e => {
           e.stopPropagation();
@@ -5591,16 +6155,27 @@
         statusCell.addEventListener("click", onRowClick);
         statusCell.appendChild(statusPill);
 
-        // Col 4: Opened
+        // Col 5: Deadline Pill
+        const dueCell = document.createElement("div");
+        dueCell.className = "db-cell due-cell" + (!issue.dueDate ? " is-due-empty" : "");
+        const duePill = createDuePill(issue.dueDate, bucket, false, true);
+        duePill.addEventListener("click", e => {
+          e.stopPropagation();
+          openDatePopover(duePill, issue.dueDate, nextYmd => updateIssueDueDate(issue, nextYmd));
+        });
+        dueCell.addEventListener("click", onRowClick);
+        dueCell.appendChild(duePill);
+
+        // Col 6: Opened
         const openedCell = document.createElement("div");
-        openedCell.className = "db-cell time-cell";
+        openedCell.className = "db-cell time-cell opened-cell";
         openedCell.textContent = formatDateTime(issue.createdAt);
         openedCell.title = `建立於 ${formatDateTime(issue.createdAt, true)} (${formatRelative(issue.createdAt)})`;
         openedCell.addEventListener("click", onRowClick);
 
-        // Col 5: Modified
+        // Col 7: Modified
         const modifiedCell = document.createElement("div");
-        modifiedCell.className = "db-cell time-cell";
+        modifiedCell.className = "db-cell time-cell modified-cell";
         const fullTimeSpan = document.createElement("span");
         fullTimeSpan.className = "time-full";
         fullTimeSpan.textContent = formatDateTime(issue.updatedAt);
@@ -5615,7 +6190,7 @@
           if (!e.target.closest(".db-cell")) onRowClick(e);
         });
 
-        row.append(nameCell, typeCell, prioCell, statusCell, openedCell, modifiedCell);
+        row.append(nameCell, typeCell, prioCell, statusCell, dueCell, openedCell, modifiedCell);
         grid.appendChild(row);
       }
     }
@@ -5726,6 +6301,14 @@
         );
       });
       addPropRow('<path d="M8.5 2L4 9h4l-.5 5L12 7H8l.5-5z"/>', "Priority", pPill);
+
+      // Deadline Prop
+      const dPill = createDuePill(issue.dueDate, bucket, true, true);
+      dPill.addEventListener("click", e => {
+        e.stopPropagation();
+        openDatePopover(dPill, issue.dueDate, nextYmd => updateIssueDueDate(issue, nextYmd));
+      });
+      addPropRow('<rect x="2.2" y="3.2" width="11.6" height="10.6" rx="2"/><path d="M5.2 1.8v2.4M10.8 1.8v2.4M2.2 6.5h11.6"/>', "Deadline", dPill);
 
       // Project Prop
       const projBtn = document.createElement("button");
@@ -6187,6 +6770,14 @@
     document.getElementById("quick-label-btn").addEventListener("click", e => {
       e.stopPropagation();
       openLabelPopover(e.currentTarget, { quickAdd: true });
+    });
+
+    document.getElementById("quick-due-btn").addEventListener("click", e => {
+      e.stopPropagation();
+      openDatePopover(e.currentTarget, state.quickAddDueDate, nextYmd => {
+        state.quickAddDueDate = nextYmd;
+        renderPageHeader();
+      });
     });
 
     document.getElementById("quick-prio-btn").addEventListener("click", e => {
